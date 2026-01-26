@@ -261,7 +261,12 @@
                 console.log(query);
 
                 return `
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 query-card ${typeClass} p-4 cursor-pointer" onclick="showQueryDetails('${query.id}')">
+                const id = String(query.id || '');
+                const clickAction = id ? `onclick="showQueryDetails('${id}')"` : '';
+                const cursorClass = id ? 'cursor-pointer' : 'cursor-not-allowed opacity-75';
+
+                return `
+                <div class="bg-white rounded-lg shadow-sm border border-slate-200 query-card ${typeClass} p-4 ${cursorClass}" ${clickAction}>
                     <div class="flex justify-between items-start mb-2">
                         <div class="flex items-center gap-2">
                              <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700">${query?.analysis?.type || 'QUERY'}</span>
