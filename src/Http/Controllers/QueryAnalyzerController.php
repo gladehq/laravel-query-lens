@@ -166,7 +166,68 @@ class QueryAnalyzerController extends Controller
 
     public function queries(Request $request): JsonResponse
     {
-        return $this->noCacheResponse($this->queriesLogic($request));
+        $queries = $this->analyzer->getQueries();
+
+        // Filter by Request ID if provided
+        if ($requestId = $request->query('request_id')) {
+            $queries = $queries->where('request_id', $requestId)->values();
+        }
+
+        // Apply filters
+        if ($type = $request->query('type')) {
+            $queries = $queries->filter(fn($q) => strtolower($q['analysis']['type']) === $type)->values();
+        }
+
+        if ($rating = $request->query('rating')) {
+            $queries = $queries->filter(fn($q) => ($q['analysis']['performance']['rating'] ?? 'unknown') === $rating)->values();
+        }
+
+        // Legacy slow_only filter (kept for backward compatibility)
+        if ($request->has('slow_only') && $request->boolean('slow_only')) {
+            $slowThreshold = config('query-analyzer.performance_thresholds.slow', 1.0);
+            $queries = $queries->where('time', '>', $slowThreshold);
+        }
+
+        // Apply sorting
+        $sort = $request->query('sort', 'timestamp');
+        $order = $request->query('order', 'desc');
+
+        $queries = $queries->sortBy(function ($query) use ($sort) {
+            if ($sort === 'time') return $query['time'];
+            if ($sort === 'complexity') return $query['analysis']['complexity']['score'] ?? 0;
+            return $query['timestamp'];
+        }, SORT_REGULAR, $order === 'desc')->values();
+
+        if ($request->has('limit')) {
+            $queries = $queries->take((int) $request->limit);
+        }
+
+        return $this->noCacheResponse(response()->json([
+            'queries' => $queries,
+            'stats' => $this->analyzer->getStats(),
+        ]));
+    }
+
+    public function requests(): JsonResponse
+    {
+        // Aggregate/Group queries by Request ID efficiently
+        $requests = $this->analyzer->getQueries()
+            ->groupBy('request_id')
+            ->map(function ($group) {
+                $first = $group->first();
+                return [
+                    'request_id' => $first['request_id'],
+                    'method' => $first['request_method'] ?? 'UNKNOWN',
+                    'path' => $first['request_path'] ?? 'terminal',
+                    'timestamp' => $first['timestamp'],
+                    'query_count' => $group->count(),
+                    'slow_count' => $group->where('analysis.performance.is_slow', true)->count(),
+                ];
+            })
+            ->sortByDesc('timestamp')
+            ->values();
+
+        return $this->noCacheResponse(response()->json($requests));
     }
 
     protected function queriesLogic(Request $request): JsonResponse

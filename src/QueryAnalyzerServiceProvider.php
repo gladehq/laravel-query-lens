@@ -43,9 +43,8 @@ class QueryAnalyzerServiceProvider extends ServiceProvider
                 __DIR__.'/../config/query-analyzer.php' => config_path('query-analyzer.php'),
             ], 'query-analyzer-config');
 
-            $this->publishes([
-                __DIR__.'/resources/views' => resource_path('views/vendor/query-analyzer'),
-            ], 'query-analyzer-views');
+            // Views are explicitly NOT published to ensure updates are always reflected immediately.
+            // users cannot override the dashboard view.
 
             $this->commands([
                 AnalyzeQueriesCommand::class,
@@ -71,6 +70,7 @@ class QueryAnalyzerServiceProvider extends ServiceProvider
                 Route::get('/', [QueryAnalyzerController::class, 'dashboard'])->name('query-analyzer.dashboard');
 
                 Route::prefix('api')->group(function () {
+                    Route::get('requests', [QueryAnalyzerController::class, 'requests'])->name('query-analyzer.api.requests');
                     Route::get('queries', [QueryAnalyzerController::class, 'queries'])->name('query-analyzer.api.queries');
                     Route::get('query/{id}', [QueryAnalyzerController::class, 'query'])->name('query-analyzer.api.query');
                     Route::get('stats', [QueryAnalyzerController::class, 'stats'])->name('query-analyzer.api.stats');

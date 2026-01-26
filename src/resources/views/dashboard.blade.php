@@ -74,226 +74,367 @@
         </div>
     </header>
 
-    <!-- Main Content -->
+    <!-- Request Sidebar replaced Filter Sidebar -->
     <main class="flex-1 flex overflow-hidden">
-        <!-- Sidebar Controls -->
-        <aside class="w-64 bg-white border-r border-slate-200 flex flex-col flex-none z-0">
-            <div class="flex-1 overflow-y-auto p-4 space-y-8">
-                <!-- Filter Section -->
-                <section>
-                    <div class="flex items-center gap-2 mb-4 opacity-60">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.293A1 1 0 013 6.586V4z"></path></svg>
-                        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em]">Filters</h3>
-                    </div>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Query Type</label>
-                            <select id="type-filter" onchange="filterQueries()" class="w-full text-xs border-slate-200 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-slate-50/50 p-2">
-                                <option value="all">All Types</option>
-                                <option value="select">SELECT</option>
-                                <option value="insert">INSERT</option>
-                                <option value="update">UPDATE</option>
-                                <option value="delete">DELETE</option>
-                            </select>
-                        </div>
-
-                        <div>
-                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block mb-1.5">Performance</label>
-                            <select id="rating-filter" onchange="filterQueries()" class="w-full text-xs border-slate-200 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-slate-50/50 p-2">
-                                <option value="all">Any Rating</option>
-                                <option value="fast">Fast</option>
-                                <option value="moderate">Moderate</option>
-                                <option value="slow">Slow</option>
-                                <option value="very_slow">Very Slow</option>
-                            </select>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Sort Section -->
-                <section>
-                    <div class="flex items-center gap-2 mb-4 opacity-60">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"></path></svg>
-                        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em]">Sorting</h3>
-                    </div>
-
-                    <div class="space-y-2">
-                        <select id="sort-by" onchange="filterQueries()" class="w-full text-xs border-slate-200 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-slate-50/50 p-2">
-                            <option value="timestamp">By Timestamp</option>
-                            <option value="time">By Execution Time</option>
-                            <option value="complexity">By Complexity</option>
-                        </select>
-                        <select id="sort-order" onchange="filterQueries()" class="w-full text-xs border-slate-200 rounded-lg shadow-sm focus:border-indigo-500 focus:ring-indigo-500 bg-slate-50/50 p-2">
-                            <option value="desc">Descending</option>
-                            <option value="asc">Ascending</option>
-                        </select>
-                    </div>
-                </section>
-
-                <!-- Settings Section -->
-                <section>
-                    <div class="flex items-center gap-2 mb-4 opacity-60">
-                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                        <h3 class="text-[10px] font-bold uppercase tracking-[0.2em]">Options</h3>
-                    </div>
-                    <label class="flex items-center justify-between p-2.5 bg-slate-50/50 rounded-lg cursor-pointer group hover:bg-slate-100/50 transition-colors border border-slate-100">
-                        <span class="text-xs font-semibold text-slate-600">Auto-refresh</span>
-                        <input type="checkbox" id="auto-refresh" onchange="toggleAutoRefresh()" class="rounded border-slate-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer">
-                    </label>
-                </section>
-            </div>
-
-            <!-- Operations Footer -->
-            <div class="p-4 border-t border-slate-100 bg-slate-50/30 space-y-2">
-                <button onclick="refreshQueries()" class="w-full flex justify-center items-center gap-2 px-4 py-2 bg-indigo-600 text-white rounded-lg shadow-sm text-xs font-bold hover:bg-indigo-700 active:scale-[0.98] transition-all">
-                    <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Refresh
-                </button>
-                <button onclick="resetQueries()" class="w-full flex justify-center items-center gap-2 px-4 py-2 bg-white border border-slate-200 text-red-500 rounded-lg text-[10px] font-bold hover:bg-red-50 hover:text-red-600 active:scale-[0.98] transition-all">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                    Clear History
-                </button>
-                
-                <div class="grid grid-cols-2 gap-2 pt-2">
-                     <button onclick="exportQueries('json')" class="text-[9px] font-bold py-1.5 bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 rounded-md transition-all uppercase tracking-tight">JSON</button>
-                     <button onclick="exportQueries('csv')" class="text-[9px] font-bold py-1.5 bg-white border border-slate-100 text-slate-400 hover:text-indigo-600 hover:border-indigo-100 rounded-md transition-all uppercase tracking-tight">CSV</button>
-                </div>
-            </div>
-        </aside>
-
-        <!-- Query List -->
-        <div class="flex-1 flex flex-col bg-slate-50 min-w-0">
-            <div class="px-6 py-3 border-b border-slate-200 bg-white flex justify-between items-center flex-none">
-                <div class="flex items-center gap-2">
-                    <h2 class="text-sm font-bold text-slate-700">Captured Queries</h2>
-                    <span id="query-count" class="bg-indigo-50 text-indigo-600 text-[10px] font-bold px-2 py-0.5 rounded-full border border-indigo-100 transition-all">0</span>
-                </div>
-            </div>
-            
-            <div id="query-list" class="flex-1 overflow-y-auto p-6 space-y-4">
-                <!-- Queries injected here -->
-                <div class="text-center py-12 text-slate-400">
-                    <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h.01M12 12h.01M19 12h.01M6 12a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0zm7 0a1 1 0 11-2 0 1 1 0 012 0z"></path></svg>
-                    Loading queries...
-                </div>
+    <aside class="w-72 bg-white border-r border-slate-200 flex flex-col flex-none z-0">
+        <!-- Sidebar Header -->
+        <div class="p-4 border-b border-slate-100 bg-slate-50/50">
+            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Incoming Requests</h2>
+            <div class="flex items-center gap-2">
+                 <button onclick="refreshRequests()" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                    Refresh List
+                 </button>
             </div>
         </div>
-    </main>
 
-    <!-- Modal -->
-    <div id="query-modal" class="fixed inset-0 z-50 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
-        <div class="fixed inset-0 bg-slate-900 bg-opacity-75 transition-opacity" onclick="closeModal()"></div>
-        <div class="fixed inset-0 z-10 overflow-y-auto">
-            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
-                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-4xl">
-                    <div id="modal-content" class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4 max-h-[85vh] overflow-y-auto">
-                         <!-- Content injected here -->
-                    </div>
-                    <div class="bg-slate-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6 border-t border-slate-100">
-                        <button type="button" onclick="closeModal()" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-slate-900 shadow-sm ring-1 ring-inset ring-slate-300 hover:bg-slate-50 sm:mt-0 sm:w-auto">Close</button>
-                    </div>
-                </div>
+        <!-- Request List -->
+        <div id="request-list" class="flex-1 overflow-y-auto">
+            <div class="text-center py-8 text-slate-400 text-xs">Loading requests...</div>
+        </div>
+
+        <!-- Filters (Collapsed/Secondary) -->
+        <div class="p-4 border-t border-slate-100 bg-slate-50/30">
+            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Filter & Sort</h3>
+            <div class="grid grid-cols-2 gap-2 mb-2">
+                <select id="type-filter" onchange="refreshQueries()" class="w-full text-xs border-slate-200 rounded shadow-sm focus:border-indigo-500 bg-white">
+                    <option value="all">All Types</option>
+                    <option value="select">SELECT</option>
+                    <option value="insert">INSERT</option>
+                    <option value="update">UPDATE</option>
+                    <option value="delete">DELETE</option>
+                </select>
+                <select id="rating-filter" onchange="refreshQueries()" class="w-full text-xs border-slate-200 rounded shadow-sm focus:border-indigo-500 bg-white">
+                    <option value="all">Any Speed</option>
+                    <option value="fast">Fast</option>
+                    <option value="moderate">Moderate</option>
+                    <option value="slow">Slow</option>
+                </select>
+            </div>
+             <button onclick="resetQueries()" class="w-full flex justify-center items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-red-500 rounded text-[10px] font-bold hover:bg-red-50 hover:text-red-600 transition-colors">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                Clear History
+            </button>
+        </div>
+    </aside>
+
+    <!-- Query List -->
+    <div class="flex-1 flex flex-col bg-slate-50 min-w-0">
+         <div class="px-6 py-4 border-b border-slate-200 bg-white flex justify-between items-center shadow-sm z-10">
+            <div class="flex flex-col">
+                <h2 class="text-sm font-bold text-slate-800 flex items-center gap-2">
+                    Queries
+                    <span id="query-count" class="bg-slate-100 text-slate-600 text-xs px-2 py-0.5 rounded-full border border-slate-200">0</span>
+                </h2>
+                <div id="current-request-info" class="text-xs text-slate-400 mt-0.5 font-mono">Select a request to view queries</div>
+            </div>
+            <div class="flex items-center gap-3">
+                <div class="flex bg-slate-100 rounded-lg p-0.5">
+                    <button onclick="switchView('list')" id="btn-view-list" class="px-3 py-1 text-xs font-medium rounded-md bg-white shadow-sm text-slate-700 transition-all">List</button>
+                    <button onclick="switchView('timeline')" id="btn-view-timeline" class="px-3 py-1 text-xs font-medium rounded-md text-slate-500 hover:text-slate-700 transition-all">Timeline</button>
+                 </div>
+            </div>
+        </div>
+        
+        <div id="query-list" class="flex-1 overflow-y-auto p-6 space-y-4">
+            <div class="text-center py-20 text-slate-400">
+                <svg class="w-12 h-12 mx-auto mb-3 text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 15l-2 5L9 9l11 4-5 2zm0 0l5 5M7.188 2.239l.777 2.897M5.136 7.965l-2.898-.777M13.95 4.05l-2.122 2.122m-5.657 5.656l-2.12 2.122"></path></svg>
+                Select a request from the sidebar
+            </div>
+        </div>
+
+        <div id="timeline-view" class="hidden flex-1 overflow-y-auto p-6">
+            <div class="text-center py-20 text-slate-400">
+                Select a request to view timeline
             </div>
         </div>
     </div>
 
-    <script>
-        let autoRefreshInterval = null;
-        const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+    <!-- Right Detail Panel -->
+    <div id="detail-panel" class="hidden w-[45%] bg-white border-l border-slate-200 flex flex-col overflow-hidden shadow-xl z-20 transition-all duration-300 relative">
+        <div class="absolute top-0 right-0 p-4 z-10">
+            <button onclick="closeDetails()" class="text-slate-400 hover:text-slate-600 bg-white rounded-full p-1 shadow-sm border border-slate-100">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+            </button>
+        </div>
+        <div id="detail-content" class="flex-1 overflow-y-auto p-6">
+            <div class="h-full flex flex-col items-center justify-center text-slate-400">
+                <svg class="w-12 h-12 mb-3 text-slate-200" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path></svg>
+                <span class="text-sm">Select a query to view details</span>
+            </div>
+        </div>
+    </div>
+</main>
 
-        document.addEventListener('DOMContentLoaded', refreshQueries);
+<!-- Modal (Existing structure reused) -->
+<!-- ... -->
 
-        async function refreshQueries() {
-            try {
-                const typeFilter = document.getElementById('type-filter').value;
-                const ratingFilter = document.getElementById('rating-filter').value;
-                const sortBy = document.getElementById('sort-by').value;
-                const sortOrder = document.getElementById('sort-order').value;
+<script>
+    let currentRequestId = null;
+    let currentView = 'list';
+    let currentQueries = [];
+    const csrfToken = document.querySelector('meta[name="csrf-token"]').getAttribute('content');
 
-                const params = new URLSearchParams();
-                if (typeFilter !== 'all') params.append('type', typeFilter);
-                if (ratingFilter !== 'all') params.append('rating', ratingFilter);
-                params.append('sort', sortBy);
-                params.append('order', sortOrder);
+    document.addEventListener('DOMContentLoaded', () => {
+        refreshRequests();
+    });
 
-                const response = await fetch(`/query-analyzer/api/queries?${params}`);
-                const data = await response.json();
-
-                updateStats(data.stats);
-                renderQueries(data.queries);
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-
-        function updateStats(stats) {
-            document.getElementById('total-queries').textContent = stats.total_queries;
-            document.getElementById('slow-queries').textContent = stats.slow_queries;
-            document.getElementById('avg-time').textContent = stats.average_time.toFixed(3) + 's';
-            document.getElementById('query-count').textContent = stats.total_queries;
-        }
-
-        function renderQueries(queries) {
-            const container = document.getElementById('query-list');
+    async function refreshRequests() {
+        const container = document.getElementById('request-list');
+        try {
+            const res = await fetch('/query-analyzer/api/requests');
+            const requests = await res.json();
             
-            if (queries.length === 0) {
-                container.innerHTML = `
-                    <div class="text-center py-20">
-                        <svg class="w-16 h-16 mx-auto text-slate-300 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
-                        <h3 class="text-lg font-medium text-slate-900">No queries found</h3>
-                        <p class="text-slate-500">Execute some database interactions to see them here.</p>
-                    </div>`;
-                return;
+            if (requests.length === 0) {
+                 container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs italic">No requests captured yet.</div>';
+                 return;
             }
 
-            container.innerHTML = queries.map((query, index) => {
-                const typeClass = `type-${query?.analysis?.type?.toLowerCase() || 'other'}`;
-                const fileShort = query?.origin?.file && query?.origin?.file !== 'unknown' 
-                    ? query.origin.file.split('/').slice(-2).join('/') + ':' + query.origin.line
-                    : '';
-                const requestId = query?.request_id ? query.request_id.substring(0, 8) + '...' : '';
-
-                const issues = query?.analysis?.issues || [];
-                const hasNPlusOne = issues.some(i => i.type === 'n+1');
-                const recommendations = query?.analysis?.recommendations || [];
-
-                console.log(query);
-
+            container.innerHTML = requests.map(req => {
+                const isSelected = req.request_id === currentRequestId;
+                const methodClass = req.method === 'GET' ? 'text-blue-600 bg-blue-50' : req.method === 'POST' ? 'text-green-600 bg-green-50' : 'text-slate-600 bg-slate-50';
+                
                 return `
-                const id = String(query.id || '');
-                const clickAction = id ? `onclick="showQueryDetails('${id}')"` : '';
-                const cursorClass = id ? 'cursor-pointer' : 'cursor-not-allowed opacity-75';
-
-                return `
-                <div class="bg-white rounded-lg shadow-sm border border-slate-200 query-card ${typeClass} p-4 ${cursorClass}" ${clickAction}>
-                    <div class="flex justify-between items-start mb-2">
-                        <div class="flex items-center gap-2">
-                             <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700">${query?.analysis?.type || 'QUERY'}</span>
-                             ${fileShort ? `<span class="text-xs font-mono text-slate-400 flex items-center gap-1" title="${query.origin.file}"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg> ${fileShort}</span>` : ''}
-                             ${requestId ? `<span class="text-xs font-mono text-slate-400 bg-slate-50 px-1 rounded" title="Request ID: ${query.request_id}">req:${requestId}</span>` : ''}
-                        </div>
-                        <div class="flex items-center gap-2">
-                            ${hasNPlusOne ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-600 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg> N+1</span>` : ''}
-                            ${issues.length > 0 && !hasNPlusOne ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-600 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg> ${issues.length}</span>` : ''}
-                            <span class="px-2 py-0.5 rounded text-xs font-bold ${getPerfClass(query?.analysis?.performance?.rating)}">${(query?.time || 0).toFixed(4)}s</span>
-                        </div>
+                <div onclick="selectRequest('${req.request_id}')" class="group px-4 py-3 border-b border-slate-50 cursor-pointer hover:bg-slate-50 transition-colors ${isSelected ? 'bg-indigo-50 border-l-4 border-l-indigo-500 pl-3' : 'border-l-4 border-l-transparent'}">
+                    <div class="flex justify-between items-start mb-1">
+                         <span class="text-[10px] font-bold px-1.5 py-0.5 rounded ${methodClass}">${req.method}</span>
+                         <span class="text-[10px] text-slate-400">${new Date(req.timestamp * 1000).toLocaleTimeString()}</span>
                     </div>
-                    
-                    <div class="font-mono text-sm text-slate-700 bg-slate-50 p-2 rounded mb-2 overflow-hidden text-ellipsis whitespace-nowrap">
-                        ${escapeHtml(query?.sql || '')}
+                    <div class="text-xs font-mono text-slate-700 truncate mb-1" title="${req.path || '/'}">${req.path || '/'}</div>
+                    <div class="flex items-center justify-between text-[10px]">
+                        <span class="text-slate-500 font-medium">${req.query_count} queries</span>
+                        ${req.slow_count > 0 ? `<span class="text-red-500 font-bold flex items-center gap-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> ${req.slow_count} slow</span>` : ''}
                     </div>
-                    
-                    ${recommendations.length > 0 ? `
-                         <div class="text-xs text-indigo-600 mt-2 flex items-center gap-1">
-                            <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
-                            ${recommendations[0] || ''} ${recommendations.length > 1 ? `(+${recommendations.length - 1} more)` : ''}
-                         </div>
-                    ` : ''}
                 </div>`;
             }).join('');
+
+            // Auto-select first if none selected
+            if (!currentRequestId && requests.length > 0) {
+                selectRequest(requests[0].request_id);
+            }
+
+        } catch (e) {
+            console.error(e);
+            container.innerHTML = '<div class="text-center py-4 text-red-400 text-xs">Failed to load requests</div>';
         }
+    }
+
+    function selectRequest(id) {
+        currentRequestId = id;
+        refreshRequests(); // Re-render to update active state
+        refreshQueries();
+    }
+
+    async function refreshQueries() {
+        if (!currentRequestId) return;
+
+        const typeFilter = document.getElementById('type-filter').value;
+        const ratingFilter = document.getElementById('rating-filter').value;
         
+        const params = new URLSearchParams();
+        params.append('request_id', currentRequestId);
+        if (typeFilter !== 'all') params.append('type', typeFilter);
+        if (ratingFilter !== 'all') params.append('rating', ratingFilter);
+
+        try {
+            const response = await fetch(`/query-analyzer/api/queries?${params}`);
+            const data = await response.json();
+            
+            currentQueries = data.queries;
+            updateStats(data.stats);
+            renderCurrentView();
+            
+            // Update Header Info
+            document.getElementById('current-request-info').innerText = `ID: ${currentRequestId}`;
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function switchView(view) {
+        currentView = view;
+        
+        // Update Buttons
+        const btnList = document.getElementById('btn-view-list');
+        const btnTimeline = document.getElementById('btn-view-timeline');
+        
+        if (view === 'list') {
+            btnList.className = 'px-3 py-1 text-xs font-bold rounded-md bg-white shadow-sm text-indigo-600 transition-all border border-slate-200';
+            btnTimeline.className = 'px-3 py-1 text-xs font-medium rounded-md text-slate-500 hover:text-slate-700 transition-all border border-transparent';
+            document.getElementById('query-list').classList.remove('hidden');
+            document.getElementById('timeline-view').classList.add('hidden');
+        } else {
+            btnList.className = 'px-3 py-1 text-xs font-medium rounded-md text-slate-500 hover:text-slate-700 transition-all border border-transparent';
+            btnTimeline.className = 'px-3 py-1 text-xs font-bold rounded-md bg-white shadow-sm text-indigo-600 transition-all border border-slate-200';
+            document.getElementById('query-list').classList.add('hidden');
+            document.getElementById('timeline-view').classList.remove('hidden');
+        }
+
+        renderCurrentView();
+    }
+
+    function renderCurrentView() {
+        if (currentView === 'list') {
+            renderQueries(currentQueries);
+        } else {
+            renderTimeline(currentQueries);
+        }
+    }
+
+    function renderTimeline(queries) {
+        const container = document.getElementById('timeline-view');
+        if (queries.length === 0) {
+            container.innerHTML = '<div class="text-center py-12 text-slate-400 text-sm">No queries found for this request.</div>';
+            return;
+        }
+
+        // Calculate bounds
+        const startTimes = queries.map(q => q.timestamp - q.time);
+        const endTimes = queries.map(q => q.timestamp);
+        const minTime = Math.min(...startTimes);
+        const maxTime = Math.max(...endTimes);
+        const totalDuration = maxTime - minTime || 0.001; 
+
+        container.innerHTML = `
+            <div class="relative bg-white rounded-xl shadow-sm border border-slate-200 p-6 overflow-hidden">
+                <div class="flex justify-between text-xs text-slate-400 mb-4 border-b border-slate-100 pb-2">
+                     <span>0ms</span>
+                     <span class="font-mono text-slate-500">${(totalDuration * 1000).toFixed(2)}ms Total Duration</span>
+                </div>
+                
+                <div class="space-y-3 relative min-h-[200px]">
+                    ${queries.map((q, idx) => {
+                        const start = q.timestamp - q.time;
+                        const offset = ((start - minTime) / totalDuration) * 100;
+                        const width = Math.max((q.time / totalDuration) * 100, 0.2); // Min width 0.2%
+                        
+                        const typeColors = {
+                            'SELECT': 'bg-blue-500',
+                            'INSERT': 'bg-green-500',
+                            'UPDATE': 'bg-amber-500',
+                            'DELETE': 'bg-red-500'
+                        };
+                        const color = typeColors[q.analysis.type] || 'bg-slate-400';
+
+                        return `
+                        <div class="group relative h-6 flex items-center">
+                            <!-- Label (Left Side) -->
+                            <div class="w-32 text-[10px] font-mono text-slate-400 truncate pr-2 text-right hidden md:block shrink-0">
+                                ${(q.time * 1000).toFixed(2)}ms
+                            </div>
+
+                            <!-- Bar Track -->
+                            <div class="flex-1 h-full relative border-l border-slate-100">
+                                <div class="absolute top-1 bottom-1 ${color} rounded-sm opacity-80 hover:opacity-100 hover:scale-y-110 transition-all cursor-pointer shadow-sm hover:shadow-md flex items-center px-2"
+                                     style="left: ${offset}%; width: ${width}%; min-width: 4px;"
+                                     onclick="showQueryDetails('${q.id}')">
+                                    <span class="text-[9px] text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity truncate whitespace-nowrap pl-1 drop-shadow-md">
+                                        ${q.analysis.type}
+                                    </span>
+                                </div>
+                            </div>
+                            
+                            <!-- Tooltip (Custom) -->
+                            <div class="invisible group-hover:visible absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 w-64 bg-slate-800 text-white text-[10px] p-2 rounded shadow-lg pointer-events-none">
+                                <div class="font-bold border-b border-slate-700 pb-1 mb-1 flex justify-between">
+                                    <span>${q.analysis.type}</span>
+                                    <span>${(q.time * 1000).toFixed(3)}ms</span>
+                                </div>
+                                <div class="font-mono text-slate-300 truncate">${escapeHtml(q.sql)}</div>
+                            </div>
+                        </div>
+                        `;
+                    }).join('')}
+                </div>
+
+                <!-- Grid Lines -->
+                <div class="absolute inset-0 pointer-events-none flex justify-between px-6 pt-12 pb-6 opacity-10">
+                    <div class="h-full w-px bg-slate-900"></div>
+                    <div class="h-full w-px bg-slate-900"></div>
+                    <div class="h-full w-px bg-slate-900"></div>
+                    <div class="h-full w-px bg-slate-900"></div>
+                    <div class="h-full w-px bg-slate-900"></div>
+                </div>
+            </div>
+        `;
+    }
+    
+    function updateStats(stats) {
+        if (!stats) return;
+        document.getElementById('total-queries').innerText = stats.count || 0;
+        document.getElementById('slow-queries').innerText = stats.slow_count || 0;
+        document.getElementById('avg-time').innerText = (stats.avg_time || 0).toFixed(4) + 's';
+    }
+
+    function renderQueries(queries) {
+        const container = document.getElementById('query-list');
+        
+        if (queries.length === 0) {
+            container.innerHTML = `<div class="text-center py-12 text-slate-400 text-sm">No queries found for this request.</div>`;
+            return;
+        }
+
+        container.innerHTML = queries.map((query, index) => {
+            const typeClass = `type-${query?.analysis?.type?.toLowerCase() || 'other'}`;
+            const fileShort = query?.origin?.file && query?.origin?.file !== 'unknown' 
+                ? query.origin.file.split('/').slice(-2).join('/') + ':' + query.origin.line
+                : '';
+            
+            // NEW: Vendor vs App Tag
+            const isVendor = query.origin.is_vendor;
+            const sourceBadge = isVendor 
+                ? `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-slate-100 text-slate-500 border border-slate-200">Vendor</span>`
+                : `<span class="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-blue-600 border border-blue-100">App</span>`;
+
+            const issues = query?.analysis?.issues || [];
+            const hasNPlusOne = issues.some(i => i.type === 'n+1');
+            const recommendations = query?.analysis?.recommendations || [];
+
+            console.log(query);
+
+            const id = String(query.id || '');
+            const clickAction = id ? `onclick="showQueryDetails('${id}')"` : '';
+            const cursorClass = id ? 'cursor-pointer' : 'cursor-not-allowed opacity-75';
+
+            return `
+            <div class="bg-white rounded-lg shadow-sm border border-slate-200 query-card ${typeClass} p-4 ${cursorClass}" ${clickAction}>
+                <div class="flex justify-between items-start mb-2">
+                    <div class="flex items-center gap-2">
+                         <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700">${query?.analysis?.type || 'QUERY'}</span>
+                         ${sourceBadge}
+                         ${fileShort ? `<span class="text-xs font-mono text-slate-400 flex items-center gap-1" title="${query.origin.file}"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg> ${fileShort}</span>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2">
+                        ${hasNPlusOne ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-600 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg> N+1</span>` : ''}
+                        ${issues.length > 0 && !hasNPlusOne ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-600 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg> ${issues.length}</span>` : ''}
+                        <span class="px-2 py-0.5 rounded text-xs font-bold ${getPerfClass(query?.analysis?.performance?.rating)}">${(query?.time || 0).toFixed(4)}s</span>
+                    </div>
+                </div>
+                
+                <div class="font-mono text-sm text-slate-700 bg-slate-50 p-2 rounded mb-2 overflow-hidden text-ellipsis whitespace-nowrap">
+                    ${escapeHtml(query?.sql || '')}
+                </div>
+                
+                ${recommendations.length > 0 ? `
+                     <div class="text-xs text-indigo-600 mt-2 flex items-center gap-1">
+                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        ${recommendations[0] || ''} ${recommendations.length > 1 ? `(+${recommendations.length - 1} more)` : ''}
+                     </div>
+                ` : ''}
+            </div>`;
+        }).join('');
+    }
+
+    async function resetQueries() {
+         if(confirm('Reset all analytics history?')) {
+             await fetch('/query-analyzer/api/reset', { method: 'POST', headers: {'X-CSRF-TOKEN': csrfToken} });
+             currentRequestId = null;
+             refreshRequests();
+             document.getElementById('query-list').innerHTML = '<div class="text-center py-20 text-slate-400">History cleared. Waiting for new requests...</div>';
+         }
+    }
+
         function getPerfClass(rating) {
             if (rating === 'fast') return 'bg-green-100 text-green-700';
             if (rating === 'moderate') return 'bg-yellow-100 text-yellow-700';
@@ -315,7 +456,7 @@
                     throw new Error(query?.error || 'Query not found on server.');
                 }
                 
-                const modal = document.getElementById('modal-content');
+                const panel = document.getElementById('detail-content');
                 
                 const perfRating = query?.analysis?.performance?.rating || 'unknown';
                 const complexity = query?.analysis?.complexity || {level: 'N/A', score: 0};
@@ -323,72 +464,114 @@
                 const recommendations = query?.analysis?.recommendations || [];
                 const issues = query?.analysis?.issues || [];
 
-                modal.innerHTML = `
-                    <div class="flex items-center justify-between mb-6 border-b border-slate-100 pb-4">
-                        <h3 class="text-xl font-bold text-slate-900">Query Details</h3>
-                        <span class="px-3 py-1 rounded-full text-sm font-bold ${getPerfClass(perfRating)}">${(query?.time || 0).toFixed(5)}s</span>
-                    </div>
-
-                    <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Query Origin & Metadata</h4>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-2 text-sm">
-                            <p class="break-all"><strong>File:</strong> <span class="text-indigo-600 font-mono text-xs">${origin.file}:${origin.line}</span></p>
-                            <p><strong>Request ID:</strong> <span class="font-mono text-xs bg-slate-100 px-1 rounded">${query.request_id || 'N/A'}</span></p>
-                            <p><strong>Performance:</strong> <span class="${getPerfClass(perfRating)} px-2 py-0.5 rounded text-xs font-bold uppercase">${perfRating}</span></p>
-                            <p><strong>Complexity:</strong> ${complexity.level} (Score: ${complexity.score})</p>
-                            <p><strong>Connection:</strong> <span class="font-mono text-xs">${query.connection || 'default'}</span></p>
-                            <p><strong>Timestamp:</strong> ${new Date((query.timestamp || 0) * 1000).toLocaleString()}</p>
-                        </div>
-                    </div>
-
-                    <div class="mb-6 bg-slate-50 p-4 rounded-lg border border-slate-200">
-                        <div class="flex justify-between items-center mb-2">
-                             <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">SQL Statement</h4>
-                             ${query?.analysis?.type === 'SELECT' ? `<button onclick="runExplain('${query.id}')" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1 rounded font-medium flex items-center gap-1 transition-colors"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg> Run Explain</button>` : ''}
-                        </div>
-                        <pre class="bg-indigo-900 text-white p-4 rounded-lg font-mono text-sm overflow-x-auto">${escapeHtml(query?.sql || '')}</pre>
-                        
-                        <div id="explain-result-${query.id}" class="hidden mt-4 bg-white border border-slate-200 rounded p-4 font-mono text-xs overflow-x-auto"></div>
-                    </div>
-
-                    ${query.bindings && query.bindings.length > 0 ? `
-                    <div class="mb-6">
-                        <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Bindings</h4>
-                         <div class="bg-slate-100 p-3 rounded font-mono text-xs text-slate-600">
-                             [ ${query.bindings.map(b => typeof b === 'string' ? `"${b}"` : b).join(', ')} ]
-                         </div>
-                    </div>` : ''}
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                panel.innerHTML = `
+                    <div class="flex items-center justify-between mb-8 border-b border-slate-100 pb-6">
                         <div>
-                             <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Recommendations</h4>
-                             ${recommendations.length > 0  ? 
-                                `<ul class="space-y-2">
-                                    ${recommendations.map(rec => `<li class="flex items-start gap-2 text-sm text-indigo-700 bg-indigo-50 p-2 rounded"><svg class="w-4 h-4 mt-0.5 flex-none" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> ${rec}</li>`).join('')}
-                                </ul>` 
-                                : '<div class="text-sm text-slate-400 italic">No recommendations. Good job!</div>'}
+                            <h3 class="text-xl font-bold text-slate-900 tracking-tight">Query Details</h3>
+                            <p class="text-[10px] text-slate-500 mt-1">Captured at ${new Date((query.timestamp || 0) * 1000).toLocaleString()}</p>
                         </div>
-                        
-                        <div>
-                             <h4 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-2">Issues & Warnings</h4>
-                             ${issues.length > 0 ? 
-                                `<ul class="space-y-2">
-                                    ${issues.map(issue => `<li class="flex items-start gap-2 text-sm text-red-700 bg-red-50 p-2 rounded"><svg class="w-4 h-4 mt-0.5 flex-none" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg> <strong>${issue?.type || 'Issue'}:</strong> ${issue?.message || 'Warning detected'}</li>`).join('')}
-                                </ul>` 
-                                : '<div class="text-sm text-slate-400 italic">No issues detected.</div>'}
+                        <div class="flex flex-col items-end gap-1">
+                            <span class="px-3 py-1 rounded-full text-sm font-bold ${getPerfClass(perfRating)}">${(query?.time || 0).toFixed(5)}s</span>
+                            <span class="text-[9px] font-bold uppercase tracking-wider text-slate-400">${perfRating}</span>
+                        </div>
+                    </div>
+
+                    <div class="mb-8 space-y-6">
+                        <div class="space-y-6">
+                             <!-- SQL Section -->
+                             <div class="bg-white rounded-xl border border-slate-200 overflow-hidden shadow-sm">
+                                <div class="flex justify-between items-center px-4 py-3 bg-slate-50 border-b border-slate-200">
+                                     <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">SQL Statement</h4>
+                                     ${query?.analysis?.type === 'SELECT' ? `<button onclick="runExplain('${query.id}')" class="text-xs bg-indigo-600 hover:bg-indigo-700 text-white px-3 py-1.5 rounded-md font-medium flex items-center gap-1.5 transition-colors shadow-sm"><svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 10l-2 1m0 0l-2-1m2 1v2.5M20 7l-2 1m2-1l-2-1m2 1v2.5M14 4l-2-1-2 1M4 7l2-1M4 7l2 1M4 7v2.5M12 21l-2-1m2 1l2-1m-2 1v-2.5M6 18l-2-1v-2.5M18 18l2-1v-2.5"></path></svg> Explain</button>` : ''}
+                                </div>
+                                <div class="relative group">
+                                    <pre class="bg-slate-50 text-slate-700 p-6 font-mono text-sm leading-relaxed overflow-x-auto whitespace-pre-wrap border-t border-slate-200 shadow-inner">${escapeHtml(query?.sql || '')}</pre>
+                                </div>
+                                <div id="explain-result-${query.id}" class="hidden border-t border-slate-200 bg-white p-0"></div>
+                             </div>
+
+                             ${query.bindings && query.bindings.length > 0 ? `
+                             <div>
+                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Bindings</h4>
+                                 <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 font-mono text-sm text-slate-700 break-all leading-relaxed shadow-inner">
+                                     [ ${query.bindings.map(b => typeof b === 'string' ? `<span class="text-green-600">"${escapeHtml(b)}"</span>` : `<span class="text-blue-600">${b}</span>`).join(', ')} ]
+                                 </div>
+                             </div>` : ''}
+                        </div>
+
+                        <div class="space-y-6">
+                            <!-- Metadata Card -->
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 pb-2 border-b border-slate-100">Metadata</h4>
+                                <div class="space-y-4">
+                                    <div>
+                                        <div class="text-xs text-slate-500 mb-1">Request ID</div>
+                                        <div class="font-mono text-sm bg-slate-100 px-2 py-1 rounded inline-block text-slate-700 break-all">${query.request_id || 'N/A'}</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-slate-500 mb-1">Connection</div>
+                                        <div class="text-sm font-medium text-slate-900">${query.connection || 'default'}</div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-slate-500 mb-1">Complexity Score</div>
+                                        <div class="flex items-center gap-2">
+                                            <div class="h-2 w-16 bg-slate-100 rounded-full overflow-hidden">
+                                                <div class="h-full bg-indigo-500" style="width: ${Math.min(complexity.score * 10, 100)}%"></div>
+                                            </div>
+                                            <span class="text-sm font-bold text-slate-700">${complexity.level} (${complexity.score})</span>
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <div class="text-xs text-slate-500 mb-1">Origin</div>
+                                        <div class="text-sm font-mono text-indigo-600 break-all leading-relaxed bg-indigo-50 p-2 rounded border border-indigo-100">
+                                            ${origin.file}:${origin.line}
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Analysis Card -->
+                            <div class="bg-white p-5 rounded-xl border border-slate-200 shadow-sm">
+                                <h4 class="text-xs font-bold text-slate-400 uppercase tracking-widest mb-4 pb-2 border-b border-slate-100">Analysis</h4>
+                                
+                                <div class="space-y-4">
+                                     <div>
+                                         <div class="text-xs text-slate-500 mb-2">Recommendations</div>
+                                         ${recommendations.length > 0  ? 
+                                            `<ul class="space-y-2">
+                                                ${recommendations.map(rec => `<li class="flex items-start gap-2 text-sm text-indigo-700 bg-indigo-50/50 p-2 rounded"><svg class="w-4 h-4 mt-0.5 flex-none text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> <span class="leading-snug">${rec}</span></li>`).join('')}
+                                            </ul>` 
+                                            : '<div class="text-sm text-slate-400 italic flex items-center gap-2"><svg class="w-4 h-4 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg> No optimizations needed</div>'}
+                                    </div>
+
+                                     <div>
+                                         <div class="text-xs text-slate-500 mb-2">Issues</div>
+                                         ${issues.length > 0 ? 
+                                            `<ul class="space-y-2">
+                                                ${issues.map(issue => `<li class="flex items-start gap-2 text-sm font-mono text-red-700 bg-red-50/50 p-2 rounded"><svg class="w-4 h-4 mt-0.5 flex-none text-red-500" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg> <span class="leading-snug"><strong>${issue?.type || 'Issue'}:</strong> ${issue?.message || 'Warning detected'}</span></li>`).join('')}
+                                            </ul>` 
+                                            : '<div class="text-sm text-slate-400 italic">No issues detected</div>'}
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 `;
 
-                document.getElementById('query-modal').classList.remove('hidden');
+                document.getElementById('detail-panel').classList.remove('hidden');
             } catch (error) {
                 console.error('Modal Error:', error);
                 alert('Could not show query details: ' + error.message);
             }
         }
 
+        function closeDetails() {
+            document.getElementById('detail-panel').classList.add('hidden');
+        }
+
+        // function closeModal() renamed/kept for potential backward compat if needed? No, just replace logic.
         function closeModal() {
-            document.getElementById('query-modal').classList.add('hidden');
+            closeDetails();
         }
 
         function filterQueries() { refreshQueries(); }
@@ -450,22 +633,23 @@
                 const standardIsTree = standard.length === 1 && Object.keys(standard[0] || {}).length === 1;
 
                 let output = `
-                    <div class="mb-4 flex justify-between items-center border-b border-slate-100 pb-2">
-                        <div class="flex flex-col">
-                             <span class="text-indigo-600 font-bold uppercase text-[10px] tracking-widest">Deep Analysis Results</span>
-                             <span class="text-[9px] text-slate-400 font-mono mt-0.5 truncate max-w-sm">Verifying SQL: ${escapeHtml(query.sql.substring(0, 70))}...</span>
+                    <div class="p-4">
+                        <div class="mb-4 flex justify-between items-center border-b border-slate-100 pb-2">
+                            <div class="flex flex-col">
+                                 <span class="text-indigo-600 font-bold uppercase text-[10px] tracking-widest">Deep Analysis Results</span>
+                                 <span class="text-[9px] text-slate-400 font-mono mt-0.5 truncate max-w-sm">Verifying SQL: ${escapeHtml(query.sql.substring(0, 70))}...</span>
+                            </div>
+                            <button onclick="document.getElementById('explain-result-${id}').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">&times;</button>
                         </div>
-                        <button onclick="document.getElementById('explain-result-${id}').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">&times;</button>
-                    </div>
                     <div class="mb-6 bg-slate-900 text-slate-100 p-4 rounded-lg shadow-inner border-l-4 border-indigo-500">
                         <h5 class="text-[10px] uppercase font-bold text-indigo-400 mb-2 tracking-tight">Humanized Summary</h5>
-                        <p class="text-sm leading-relaxed font-sans">${summary}</p>
+                        <p class="text-xs leading-relaxed font-mono">${summary}</p>
                     </div>
 
                     <!-- Bullet Insights -->
                     ${insights.length > 0 ? `
                     <div class="mb-6 space-y-2">
-                        ${insights.map(i => `<div class="bg-indigo-50 border-l-4 border-indigo-400 p-2 text-xs text-indigo-800 font-medium shadow-sm">${i}</div>`).join('')}
+                        ${insights.map(i => `<div class="bg-indigo-50 border-l-4 border-indigo-400 p-2 text-sm text-indigo-800 font-medium shadow-sm">${i}</div>`).join('')}
                     </div>` : ''}
 
                     <!-- Dual View Profiles -->
@@ -475,7 +659,7 @@
                         <div>
                             <h5 class="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Standard Execution Plan</h5>
                             ${standardIsTree ? `
-                                <pre class="whitespace-pre-wrap bg-slate-50 p-3 rounded border border-slate-100 font-mono text-[10px] leading-tight text-slate-600">${escapeHtml(String(Object.values(standard[0])[0] || ''))}</pre>
+                                <pre class="whitespace-pre-wrap bg-slate-50 p-3 rounded border border-slate-100 font-mono text-xs leading-tight text-slate-600">${escapeHtml(String(Object.values(standard[0])[0] || ''))}</pre>
                             ` : `
                                 <div class="overflow-x-auto border border-slate-200 rounded">
                                     <table class="w-full text-left border-collapse min-w-full">
@@ -500,9 +684,10 @@
                         ${data.supports_analyze && analyze.length > 0 && analyze[0] ? `
                         <div>
                             <h5 class="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Profiling Tree (Analyze)</h5>
-                            <pre class="whitespace-pre-wrap bg-slate-800 text-indigo-300 p-4 rounded font-mono text-[11px] leading-tight border border-slate-700 shadow-lg">${escapeHtml(String(Object.values(analyze[0])[0] || ''))}</pre>
+                            <pre class="whitespace-pre-wrap bg-slate-800 text-indigo-300 p-4 rounded font-mono text-xs leading-tight border border-slate-700 shadow-lg">${escapeHtml(String(Object.values(analyze[0])[0] || ''))}</pre>
                         </div>` : ''}
                     </div>
+                </div>
                 `;
 
                 container.innerHTML = output;

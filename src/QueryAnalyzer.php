@@ -32,6 +32,11 @@ class QueryAnalyzer
             return;
         }
 
+        // 1.1 Strictly ignore EXPLAIN queries to prevent recursion loops or noise
+        if (str_starts_with(strtoupper(trim($sql)), 'EXPLAIN')) {
+            return;
+        }
+
         // Also check bindings for the cache key, as database-backed cache drivers use parameter binding
         foreach ($bindings as $binding) {
             if (is_string($binding) && str_contains($binding, 'laravel_query_analyzer_queries_v3')) {
@@ -58,6 +63,8 @@ class QueryAnalyzer
         $query = [
             'id' => (string) Str::orderedUuid(),
             'request_id' => $this->requestId ?? 'cli-' . getmypid(),
+            'request_path' => request()->path(),
+            'request_method' => request()->method(),
             'sql' => $sql,
             'bindings' => $bindings,
             'time' => $time,
@@ -118,12 +125,13 @@ class QueryAnalyzer
             }
 
             return [
-                'file' => $frame['file'], // Return original path for display
+                'file' => $frame['file'],
                 'line' => $frame['line'] ?? 0,
+                'is_vendor' => str_contains(realpath($frame['file']), '/vendor/'),
             ];
         }
 
-        return ['file' => 'unknown', 'line' => 0];
+        return ['file' => 'unknown', 'line' => 0, 'is_vendor' => false];
     }
 
     public function analyzeQuery(string $sql, array $bindings = [], float $time = 0.0): array
