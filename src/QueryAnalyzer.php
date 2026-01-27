@@ -25,6 +25,11 @@ class QueryAnalyzer
         $this->queryStructures = []; // Clear structure tracking for new request
     }
 
+    public function getRequestId(): ?string
+    {
+        return $this->requestId;
+    }
+
     public function recordQuery(string $sql, array $bindings = [], float $time = 0.0, string $connection = 'default'): void
     {
         // 1. Ignore queries related to the analyzer's own cache storage
@@ -75,6 +80,42 @@ class QueryAnalyzer
         ];
 
         $this->storage->store($query);
+    }
+
+    public function recordCacheInteraction(string $type, string $key, array $tags = [], mixed $value = null): void
+    {
+        // Ignore analyzer's own cache keys
+        if (str_contains($key, 'laravel_query_analyzer_queries_v3')) {
+            return;
+        }
+
+        $event = [
+            'id' => (string) Str::orderedUuid(),
+            'request_id' => $this->requestId ?? 'cli-' . getmypid(),
+            'request_path' => request()->path(),
+            'request_method' => request()->method(),
+            'sql' => "CACHE " . strtoupper($type) . ": " . $key, // Pseudo-SQL for display
+            'bindings' => ['key' => $key, 'tags' => $tags],
+            'time' => 0.0001, // Minimal time for visualization
+            'connection' => 'cache',
+            'timestamp' => microtime(true),
+            'analysis' => [
+                'type' => 'CACHE',
+                'performance' => ['rating' => 'fast', 'execution_time' => 0.0001],
+                'complexity' => ['score' => 0, 'level' => 'low'],
+                'recommendations' => [],
+                'issues' => [],
+                'cache_info' => [
+                    'type' => $type, // 'hit' or 'miss'
+                    'key' => $key,
+                    'tags' => $tags,
+                    'size' => $value ? strlen(serialize($value)) : 0,
+                ]
+            ],
+            'origin' => $this->findOrigin(),
+        ];
+
+        $this->storage->store($event);
     }
 
     protected function analyzeWithNPlusOne(string $sql, array $bindings, float $time, bool $isNPlusOne): array
@@ -356,7 +397,7 @@ class QueryAnalyzer
 
     public function getQueries(): Collection
     {
-        return collect($this->storage->get());
+        return collect($this->storage->get(10000));
     }
 
     public function getStats(): array

@@ -9,9 +9,24 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
     <style>
         body { font-family: 'Inter', sans-serif; background-color: #f3f4f6; }
         .font-mono { font-family: 'JetBrains Mono', monospace; }
+        
+        /* Markdown Content Styles */
+        .markdown-content ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 0.5em; }
+        .markdown-content ol { list-style-type: decimal; padding-left: 1.5em; margin-bottom: 0.5em; }
+        .markdown-content p { margin-bottom: 0.75em; }
+        .markdown-content strong { font-weight: 600; color: #4f46e5; }
+        .markdown-content code { background-color: #e2e8f0; padding: 0.1em 0.3em; border-radius: 0.2em; font-family: 'JetBrains Mono', monospace; font-size: 0.9em; color: #be185d; }
+        .markdown-content pre { background-color: #1e293b; color: #e2e8f0; padding: 1em; border-radius: 0.5em; overflow-x: auto; margin-bottom: 1em; }
+        .markdown-content pre code { background-color: transparent; color: inherit; padding: 0; }
+        .markdown-content h1 { font-size: 1.1rem; font-weight: 700; color: #1e293b; margin-top: 1em; margin-bottom: 0.5em; border-bottom: 1px solid #e2e8f0; padding-bottom: 0.3em; }
+        .markdown-content h2 { font-size: 1rem; font-weight: 600; color: #334155; margin-top: 1em; margin-bottom: 0.5em; }
+        .markdown-content h3 { font-size: 0.9rem; font-weight: 600; color: #475569; margin-top: 0.75em; margin-bottom: 0.25em; }
+        .markdown-content h4 { font-size: 0.85rem; font-weight: 600; color: #64748b; margin-top: 0.5em; margin-bottom: 0.25em; }
         
         /* Custom scrollbar */
         ::-webkit-scrollbar { width: 8px; height: 8px; }
@@ -25,7 +40,10 @@
         .type-select { border-left-color: #3b82f6; }
         .type-insert { border-left-color: #10b981; }
         .type-update { border-left-color: #f59e0b; }
+        .type-insert { border-left-color: #10b981; }
+        .type-update { border-left-color: #f59e0b; }
         .type-delete { border-left-color: #ef4444; }
+        .type-cache { border-left-color: #8b5cf6; }
 
 
         .modal-enter { opacity: 0; transform: scale(0.95); }
@@ -77,15 +95,61 @@
     <!-- Request Sidebar replaced Filter Sidebar -->
     <main class="flex-1 flex overflow-hidden">
     <aside class="w-72 bg-white border-r border-slate-200 flex flex-col flex-none z-0">
+        <!-- Filters & Sorting (Primary) -->
+        <div class="p-4 bg-slate-50/50">
+            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Filters</h3>
+            <div class="grid grid-cols-2 gap-2 mb-3">
+                <select id="type-filter" onchange="updateFilters()" class="w-full text-xs border-slate-200 rounded shadow-sm focus:border-indigo-500 bg-white" title="Filter by Query Type">
+                    <option value="all">All Types</option>
+                    <option value="select">SELECT</option>
+                    <option value="insert">INSERT</option>
+                    <option value="update">UPDATE</option>
+                    <option value="delete">DELETE</option>
+                    <option value="cache">CACHE</option>
+                </select>
+                <select id="issue-filter" onchange="updateFilters()" class="w-full text-xs border-slate-200 rounded shadow-sm focus:border-indigo-500 bg-white" title="Filter by Issue">
+                    <option value="all">All Issues</option>
+                    <option value="n+1">N+1 Queries</option>
+                    <option value="performance">Performance</option>
+                    <option value="security">Security</option>
+                </select>
+            </div>
+
+            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Sort</h3>
+            <div class="grid grid-cols-2 gap-2 mb-4">
+                <select id="sort-by" onchange="refreshQueries()" class="w-full text-xs border-slate-200 rounded shadow-sm focus:border-indigo-500 bg-white" title="Sort Criteria">
+                    <option value="timestamp">By Sequence</option>
+                    <option value="time">By Speed</option>
+                    <option value="complexity">By Complexity</option>
+                </select>
+                <select id="sort-order" onchange="refreshQueries()" class="w-full text-xs border-slate-200 rounded shadow-sm focus:border-indigo-500 bg-white" title="Sort Order">
+                    <option value="desc">Desc (High→Low)</option>
+                    <option value="asc">Asc (Low→High)</option>
+                </select>
+            </div>
+            
+             <div class="space-y-2">
+                 <button onclick="resetQueries()" class="w-full flex justify-center items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-red-500 rounded text-[10px] font-bold hover:bg-red-50 hover:text-red-600 transition-colors">
+                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
+                    Clear History
+                </button>
+             </div>
+        </div>
+
+        <!-- Divider -->
+        <div class="h-1 bg-slate-100 shadow-inner"></div>
+
         <!-- Sidebar Header -->
         <div class="p-4 border-b border-slate-100 bg-slate-50/50">
-            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-1">Incoming Requests</h2>
-            <div class="flex items-center gap-2">
-                 <button onclick="refreshRequests()" class="text-xs text-indigo-600 hover:text-indigo-800 font-medium flex items-center gap-1">
-                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
-                    Refresh List
-                 </button>
-            </div>
+            <h2 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-0">Incoming Requests <span id="request-count" class="ml-1 text-xs font-normal text-slate-400"></span></h2>
+        </div>
+
+        <!-- Refresh Action -->
+        <div class="p-2 bg-slate-50 border-b border-slate-100">
+             <button onclick="refreshRequests()" class="w-full flex justify-center items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-indigo-600 rounded text-[10px] font-bold hover:bg-indigo-50 hover:text-indigo-700 transition-colors">
+                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path></svg>
+                Refresh List
+             </button>
         </div>
 
         <!-- Request List -->
@@ -93,29 +157,7 @@
             <div class="text-center py-8 text-slate-400 text-xs">Loading requests...</div>
         </div>
 
-        <!-- Filters (Collapsed/Secondary) -->
-        <div class="p-4 border-t border-slate-100 bg-slate-50/30">
-            <h3 class="text-[10px] font-bold text-slate-400 uppercase tracking-widest mb-3">Filter & Sort</h3>
-            <div class="grid grid-cols-2 gap-2 mb-2">
-                <select id="type-filter" onchange="refreshQueries()" class="w-full text-xs border-slate-200 rounded shadow-sm focus:border-indigo-500 bg-white">
-                    <option value="all">All Types</option>
-                    <option value="select">SELECT</option>
-                    <option value="insert">INSERT</option>
-                    <option value="update">UPDATE</option>
-                    <option value="delete">DELETE</option>
-                </select>
-                <select id="rating-filter" onchange="refreshQueries()" class="w-full text-xs border-slate-200 rounded shadow-sm focus:border-indigo-500 bg-white">
-                    <option value="all">Any Speed</option>
-                    <option value="fast">Fast</option>
-                    <option value="moderate">Moderate</option>
-                    <option value="slow">Slow</option>
-                </select>
-            </div>
-             <button onclick="resetQueries()" class="w-full flex justify-center items-center gap-1.5 px-3 py-1.5 bg-white border border-slate-200 text-red-500 rounded text-[10px] font-bold hover:bg-red-50 hover:text-red-600 transition-colors">
-                <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path></svg>
-                Clear History
-            </button>
-        </div>
+
     </aside>
 
     <!-- Query List -->
@@ -181,14 +223,31 @@
 
     async function refreshRequests() {
         const container = document.getElementById('request-list');
+        
+        // Get Filters
+        const typeFilter = document.getElementById('type-filter').value;
+        const issueFilter = document.getElementById('issue-filter').value;
+        const params = new URLSearchParams();
+        if (typeFilter !== 'all') params.append('type', typeFilter);
+        if (issueFilter !== 'all') params.append('issue_type', issueFilter);
+        
+        // Add cache buster
+        params.append('_cb', Date.now());
+
         try {
-            const res = await fetch('/query-analyzer/api/requests');
+            const res = await fetch(`/query-analyzer/api/requests?${params}`);
             const requests = await res.json();
             
             if (requests.length === 0) {
-                 container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs italic">No requests captured yet.</div>';
+                 container.innerHTML = '<div class="text-center py-8 text-slate-400 text-xs italic">No requests found matching filters.</div>';
+                 document.getElementById('request-count').textContent = '(0)';
                  return;
             }
+
+            // Calculate stats
+            const total = requests.length;
+            const matches = requests.filter(r => r.query_count > 0).length;
+            document.getElementById('request-count').textContent = `(${matches}/${total})`;
 
             container.innerHTML = requests.map(req => {
                 const isSelected = req.request_id === currentRequestId;
@@ -202,13 +261,14 @@
                     </div>
                     <div class="text-xs font-mono text-slate-700 truncate mb-1" title="${req.path || '/'}">${req.path || '/'}</div>
                     <div class="flex items-center justify-between text-[10px]">
-                        <span class="text-slate-500 font-medium">${req.query_count} queries</span>
+                        <span class="text-slate-500 font-medium">${req.query_count} queries <span class="text-slate-300 mx-1">|</span> <span class="text-[9px]">${(req.avg_time * 1000).toFixed(2)}ms avg</span></span>
                         ${req.slow_count > 0 ? `<span class="text-red-500 font-bold flex items-center gap-0.5"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg> ${req.slow_count} slow</span>` : ''}
                     </div>
                 </div>`;
             }).join('');
 
-            // Auto-select first if none selected
+            // If current selected ID is no longer in the filtered list, deselect? 
+            // Or just check if still valid? For simplified UX, if list non-empty and nothing selected, select first.
             if (!currentRequestId && requests.length > 0) {
                 selectRequest(requests[0].request_id);
             }
@@ -221,20 +281,24 @@
 
     function selectRequest(id) {
         currentRequestId = id;
-        refreshRequests(); // Re-render to update active state
-        refreshQueries();
+        refreshRequests(); // Re-render sidebar to update highlighting
+        refreshQueries();  // Update main content
     }
 
     async function refreshQueries() {
         if (!currentRequestId) return;
 
         const typeFilter = document.getElementById('type-filter').value;
-        const ratingFilter = document.getElementById('rating-filter').value;
+        const issueFilter = document.getElementById('issue-filter').value;
+        const sortBy = document.getElementById('sort-by').value;
+        const sortOrder = document.getElementById('sort-order').value;
         
         const params = new URLSearchParams();
         params.append('request_id', currentRequestId);
         if (typeFilter !== 'all') params.append('type', typeFilter);
-        if (ratingFilter !== 'all') params.append('rating', ratingFilter);
+        if (issueFilter !== 'all') params.append('issue_type', issueFilter);
+        params.append('sort', sortBy);
+        params.append('order', sortOrder);
 
         try {
             const response = await fetch(`/query-analyzer/api/queries?${params}`);
@@ -246,6 +310,7 @@
             
             // Update Header Info
             document.getElementById('current-request-info').innerText = `ID: ${currentRequestId}`;
+            document.getElementById('query-count').innerText = currentQueries.length;
 
         } catch (error) {
             console.error('Error:', error);
@@ -284,87 +349,140 @@
 
     function renderTimeline(queries) {
         const container = document.getElementById('timeline-view');
+        container.innerHTML = ''; // Clear container
+
         if (queries.length === 0) {
             container.innerHTML = '<div class="text-center py-12 text-slate-400 text-sm">No queries found for this request.</div>';
             return;
         }
 
-        // Calculate bounds
-        const startTimes = queries.map(q => q.timestamp - q.time);
-        const endTimes = queries.map(q => q.timestamp);
-        const minTime = Math.min(...startTimes);
-        const maxTime = Math.max(...endTimes);
-        const totalDuration = maxTime - minTime || 0.001; 
+        // Create a wrapper for scrolling
+        const scrollWrapper = document.createElement('div');
+        scrollWrapper.className = 'overflow-y-auto pr-2 custom-scrollbar';
+        scrollWrapper.style.maxHeight = '50vh';
+        container.appendChild(scrollWrapper);
 
-        container.innerHTML = `
-            <div class="relative bg-white rounded-xl shadow-sm border border-slate-200 p-6 overflow-hidden">
-                <div class="flex justify-between text-xs text-slate-400 mb-4 border-b border-slate-100 pb-2">
-                     <span>0ms</span>
-                     <span class="font-mono text-slate-500">${(totalDuration * 1000).toFixed(2)}ms Total Duration</span>
-                </div>
-                
-                <div class="space-y-3 relative min-h-[200px]">
-                    ${queries.map((q, idx) => {
-                        const start = q.timestamp - q.time;
-                        const offset = ((start - minTime) / totalDuration) * 100;
-                        const width = Math.max((q.time / totalDuration) * 100, 0.2); // Min width 0.2%
-                        
-                        const typeColors = {
-                            'SELECT': 'bg-blue-500',
-                            'INSERT': 'bg-green-500',
-                            'UPDATE': 'bg-amber-500',
-                            'DELETE': 'bg-red-500'
-                        };
-                        const color = typeColors[q.analysis.type] || 'bg-slate-400';
+        // Create a dedicated container for the chart inside the scroll wrapper
+        const chartContainer = document.createElement('div');
+        scrollWrapper.appendChild(chartContainer);
 
-                        return `
-                        <div class="group relative h-6 flex items-center">
-                            <!-- Label (Left Side) -->
-                            <div class="w-32 text-[10px] font-mono text-slate-400 truncate pr-2 text-right hidden md:block shrink-0">
-                                ${(q.time * 1000).toFixed(2)}ms
-                            </div>
+        // Prepare Data for ApexCharts
+        const minTs = Math.min(...queries.map(q => q.timestamp - q.time));
+        
+        const seriesData = queries.map((q, index) => {
+            const startMs = (q.timestamp - q.time - minTs) * 1000;
+            const endMs = (q.timestamp - minTs) * 1000;
+            const durationMs = (q.time * 1000).toFixed(2);
+            
+            return {
+                x: `${index + 1}. ${q.analysis.type} (${durationMs}ms)`,
+                y: [startMs, endMs],
+                fillColor: getColorForType(q.analysis.type),
+                queryId: q.id,
+                sql: q.sql,
+                duration: q.time
+            };
+        });
 
-                            <!-- Bar Track -->
-                            <div class="flex-1 h-full relative border-l border-slate-100">
-                                <div class="absolute top-1 bottom-1 ${color} rounded-sm opacity-80 hover:opacity-100 hover:scale-y-110 transition-all cursor-pointer shadow-sm hover:shadow-md flex items-center px-2"
-                                     style="left: ${offset}%; width: ${width}%; min-width: 4px;"
-                                     onclick="showQueryDetails('${q.id}')">
-                                    <span class="text-[9px] text-white font-bold opacity-0 group-hover:opacity-100 transition-opacity truncate whitespace-nowrap pl-1 drop-shadow-md">
-                                        ${q.analysis.type}
-                                    </span>
-                                </div>
-                            </div>
-                            
-                            <!-- Tooltip (Custom) -->
-                            <div class="invisible group-hover:visible absolute left-1/2 -translate-x-1/2 bottom-full mb-1 z-50 w-64 bg-slate-800 text-white text-[10px] p-2 rounded shadow-lg pointer-events-none">
-                                <div class="font-bold border-b border-slate-700 pb-1 mb-1 flex justify-between">
-                                    <span>${q.analysis.type}</span>
-                                    <span>${(q.time * 1000).toFixed(3)}ms</span>
-                                </div>
-                                <div class="font-mono text-slate-300 truncate">${escapeHtml(q.sql)}</div>
-                            </div>
+        const options = {
+            series: [{
+                data: seriesData
+            }],
+            chart: {
+                type: 'rangeBar',
+                height: Math.max(350, queries.length * 28), 
+                fontFamily: 'JetBrains Mono, monospace', // Monospace for alignment
+                toolbar: { show: false },
+                zoom: { enabled: false },
+                selection: { enabled: false },
+                events: {
+                    dataPointSelection: function(event, chartContext, config) {
+                        const point = config.w.config.series[0].data[config.dataPointIndex];
+                        if (point && point.queryId) {
+                            showQueryDetails(point.queryId);
+                        }
+                    }
+                }
+            },
+            plotOptions: {
+                bar: {
+                    horizontal: true,
+                    barHeight: '70%', 
+                    rangeBarGroupRows: true,
+                    borderRadius: 2
+                }
+            },
+            dataLabels: {
+                enabled: false // Clean look, info is in label/tooltip
+            },
+            xaxis: {
+                type: 'numeric',
+                position: 'top', 
+                labels: {
+                    formatter: function(val) {
+                        return val.toFixed(0) + 'ms';
+                    },
+                    style: { colors: '#94a3b8', fontFamily: 'JetBrains Mono' }
+                },
+                tooltip: { enabled: false },
+                axisBorder: { show: false },
+                axisTicks: { show: false }
+            },
+            yaxis: {
+                labels: {
+                    style: { 
+                        fontSize: '11px', 
+                        fontFamily: 'JetBrains Mono',
+                        colors: '#334155'
+                    },
+                    minWidth: 200, // Ensure strictly aligned left column
+                    maxWidth: 400
+                }
+            },
+            grid: {
+                borderColor: '#f1f5f9',
+                xaxis: { lines: { show: true } },
+                yaxis: { lines: { show: true } }, // Row lines
+                column: { opacity: 0 }
+            },
+            tooltip: {
+                custom: function({series, seriesIndex, dataPointIndex, w}) {
+                    const data = w.config.series[seriesIndex].data[dataPointIndex];
+                    return `
+                        <div class="px-3 py-2 bg-slate-800 text-white text-xs rounded shadow-lg border border-slate-700 z-50 relative">
+                             <div class="font-bold mb-1 border-b border-slate-600 pb-1 flex justify-between gap-4">
+                                <span>${data.x.split('(')[0]}</span>
+                                <span class="text-indigo-300 font-mono">${(data.duration * 1000).toFixed(4)}ms</span>
+                             </div>
+                             <div class="font-mono text-[10px] opacity-80 max-w-xs break-all whitespace-pre-wrap leading-tight">
+                                ${escapeHtml(data.sql.substring(0, 150))}${data.sql.length > 150 ? '...' : ''}
+                             </div>
                         </div>
-                        `;
-                    }).join('')}
-                </div>
+                    `;
+                }
+            }
+        };
 
-                <!-- Grid Lines -->
-                <div class="absolute inset-0 pointer-events-none flex justify-between px-6 pt-12 pb-6 opacity-10">
-                    <div class="h-full w-px bg-slate-900"></div>
-                    <div class="h-full w-px bg-slate-900"></div>
-                    <div class="h-full w-px bg-slate-900"></div>
-                    <div class="h-full w-px bg-slate-900"></div>
-                    <div class="h-full w-px bg-slate-900"></div>
-                </div>
-            </div>
-        `;
+        const chart = new ApexCharts(chartContainer, options);
+        chart.render();
+    }
+
+    function getColorForType(type) {
+        switch(type) {
+            case 'SELECT': return '#3b82f6';
+            case 'INSERT': return '#10b981';
+            case 'UPDATE': return '#f59e0b';
+            case 'DELETE': return '#ef4444';
+            case 'CACHE':  return '#8b5cf6';
+            default: return '#94a3b8';
+        }
     }
     
     function updateStats(stats) {
         if (!stats) return;
-        document.getElementById('total-queries').innerText = stats.count || 0;
-        document.getElementById('slow-queries').innerText = stats.slow_count || 0;
-        document.getElementById('avg-time').innerText = (stats.avg_time || 0).toFixed(4) + 's';
+        document.getElementById('total-queries').innerText = stats.total_queries || 0;
+        document.getElementById('slow-queries').innerText = stats.slow_queries || 0;
+        document.getElementById('avg-time').innerText = (stats.average_time || 0).toFixed(4) + 's';
     }
 
     function renderQueries(queries) {
@@ -399,16 +517,25 @@
 
             return `
             <div class="bg-white rounded-lg shadow-sm border border-slate-200 query-card ${typeClass} p-4 ${cursorClass}" ${clickAction}>
-                <div class="flex justify-between items-start mb-2">
-                    <div class="flex items-center gap-2">
-                         <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700">${query?.analysis?.type || 'QUERY'}</span>
+                <div class="flex justify-between items-start mb-2 gap-2">
+                    <div class="flex items-center gap-2 min-w-0">
+                         <span class="px-2 py-0.5 rounded text-xs font-bold bg-slate-100 text-slate-700 whitespace-nowrap flex-shrink-0">${query?.analysis?.type || 'QUERY'}</span>
                          ${sourceBadge}
-                         ${fileShort ? `<span class="text-xs font-mono text-slate-400 flex items-center gap-1" title="${query.origin.file}"><svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg> ${fileShort}</span>` : ''}
+                         ${fileShort ? `
+                            <div class="flex items-center gap-1 min-w-0 text-xs font-mono text-slate-400 group">
+                                <svg class="w-3 h-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"></path></svg> 
+                                <span class="truncate" title="${query.origin.file}:${query.origin.line}">${fileShort}</span>
+                                <button onclick="event.stopPropagation(); copyToClipboard('${query.origin.file}:${query.origin.line}', this)" 
+                                        class="bg-slate-50 border border-slate-200 text-slate-400 hover:text-indigo-600 hover:bg-white hover:border-indigo-300 transition-all p-1 rounded shadow-sm flex-shrink-0 ml-1" 
+                                        title="Copy absolute path with line number">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"></path></svg>
+                                </button>
+                            </div>` : ''}
                     </div>
-                    <div class="flex items-center gap-2">
-                        ${hasNPlusOne ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-600 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg> N+1</span>` : ''}
-                        ${issues.length > 0 && !hasNPlusOne ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-600 flex items-center gap-1"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg> ${issues.length}</span>` : ''}
-                        <span class="px-2 py-0.5 rounded text-xs font-bold ${getPerfClass(query?.analysis?.performance?.rating)}">${(query?.time || 0).toFixed(4)}s</span>
+                    <div class="flex items-center gap-2 flex-shrink-0">
+                        ${hasNPlusOne ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-purple-100 text-purple-600 flex items-center gap-1 whitespace-nowrap"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path d="M7 3a1 1 0 000 2h6a1 1 0 100-2H7zM4 7a1 1 0 011-1h10a1 1 0 110 2H5a1 1 0 01-1-1zM2 11a2 2 0 012-2h12a2 2 0 012 2v4a2 2 0 01-2 2H4a2 2 0 01-2-2v-4z"></path></svg> N+1</span>` : ''}
+                        ${issues.length > 0 && !hasNPlusOne ? `<span class="px-2 py-0.5 rounded text-xs font-bold bg-red-100 text-red-600 flex items-center gap-1 whitespace-nowrap"><svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg> ${issues.length}</span>` : ''}
+                        <span class="px-2 py-0.5 rounded text-xs font-bold whitespace-nowrap ${getPerfClass(query?.analysis?.performance?.rating)}">${(query?.time || 0).toFixed(4)}s</span>
                     </div>
                 </div>
                 
@@ -430,8 +557,10 @@
          if(confirm('Reset all analytics history?')) {
              await fetch('/query-analyzer/api/reset', { method: 'POST', headers: {'X-CSRF-TOKEN': csrfToken} });
              currentRequestId = null;
-             refreshRequests();
+             refreshRequests(); // Refresh sidebar
+             closeDetails();    // Close side panel
              document.getElementById('query-list').innerHTML = '<div class="text-center py-20 text-slate-400">History cleared. Waiting for new requests...</div>';
+             document.getElementById('timeline-view').innerHTML = ''; // Clear timeline
          }
     }
 
@@ -440,6 +569,48 @@
             if (rating === 'moderate') return 'bg-yellow-100 text-yellow-700';
             if (rating === 'slow') return 'bg-orange-100 text-orange-700';
             return 'bg-red-100 text-red-700';
+        }
+
+        function copyToClipboard(text, btn) {
+            // Fallback for non-secure contexts
+            if (!navigator.clipboard) {
+                const textArea = document.createElement("textarea");
+                textArea.value = text;
+                textArea.style.position = "fixed"; // Avoid scrolling to bottom
+                document.body.appendChild(textArea);
+                textArea.focus();
+                textArea.select();
+                try {
+                    document.execCommand('copy');
+                    showCopyFeedback(btn);
+                } catch (err) {
+                    console.error('Fallback: Oops, unable to copy', err);
+                }
+                document.body.removeChild(textArea);
+                return;
+            }
+
+            navigator.clipboard.writeText(text).then(() => {
+                showCopyFeedback(btn);
+            }, (err) => {
+                console.error('Async: Could not copy text: ', err);
+            });
+        }
+
+        function showCopyFeedback(btn) {
+            const originalHtml = btn.innerHTML;
+            const originalTitle = btn.title;
+            
+            // Visual feedback
+            btn.innerHTML = `<svg class="w-3 h-3 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>`;
+            btn.classList.add('bg-green-50', 'border-green-200');
+            btn.title = "Copied!";
+            
+            setTimeout(() => {
+                btn.innerHTML = originalHtml;
+                btn.title = originalTitle;
+                btn.classList.remove('bg-green-50', 'border-green-200');
+            }, 2000);
         }
 
         async function showQueryDetails(id) {
@@ -492,7 +663,16 @@
 
                              ${query.bindings && query.bindings.length > 0 ? `
                              <div>
-                                <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest mb-3">Bindings</h4>
+                                <div class="flex items-center gap-2 mb-3">
+                                    <h4 class="text-xs font-bold text-slate-500 uppercase tracking-widest">Bindings</h4>
+                                    <div class="relative group cursor-help">
+                                        <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                        <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-[10px] rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none w-48 z-10 font-normal leading-relaxed text-center">
+                                            Values substituted into the prepared statement placeholders.
+                                            <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-800"></div>
+                                        </div>
+                                    </div>
+                                </div>
                                  <div class="bg-slate-50 p-4 rounded-xl border border-slate-200 font-mono text-sm text-slate-700 break-all leading-relaxed shadow-inner">
                                      [ ${query.bindings.map(b => typeof b === 'string' ? `<span class="text-green-600">"${escapeHtml(b)}"</span>` : `<span class="text-blue-600">${b}</span>`).join(', ')} ]
                                  </div>
@@ -513,7 +693,16 @@
                                         <div class="text-sm font-medium text-slate-900">${query.connection || 'default'}</div>
                                     </div>
                                     <div>
-                                        <div class="text-xs text-slate-500 mb-1">Complexity Score</div>
+                                        <div class="flex items-center gap-1.5 mb-1">
+                                            <div class="text-xs text-slate-500">Complexity Score</div>
+                                            <div class="relative group cursor-help">
+                                                <svg class="w-3.5 h-3.5 text-slate-400 group-hover:text-indigo-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                                                <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 px-3 py-2 bg-slate-800 text-white text-[10px] rounded shadow-lg opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none w-56 z-10 font-normal leading-relaxed text-center">
+                                                    Estimates potentially expensive operations. <strong class="text-indigo-300">Joins</strong> and <strong class="text-indigo-300">Subqueries</strong> add more weight than simple filters. Scores > 10 are considered High.
+                                                    <div class="absolute top-full left-1/2 -translate-x-1/2 -mt-1 border-4 border-transparent border-t-slate-800"></div>
+                                                </div>
+                                            </div>
+                                        </div>
                                         <div class="flex items-center gap-2">
                                             <div class="h-2 w-16 bg-slate-100 rounded-full overflow-hidden">
                                                 <div class="h-full bg-indigo-500" style="width: ${Math.min(complexity.score * 10, 100)}%"></div>
@@ -575,6 +764,12 @@
         }
 
         function filterQueries() { refreshQueries(); }
+
+        function updateFilters() {
+            refreshRequests(); // Updates sidebar counts based on filters
+            refreshQueries();  // Updates main view stats based on filters (implicit via selectRequest -> refreshQueries, but good to ensure)
+        }
+
         function toggleAutoRefresh() {
              const checkbox = document.getElementById('auto-refresh');
              if (checkbox.checked) {
@@ -584,12 +779,7 @@
              }
         }
         
-        async function resetQueries() {
-             if(confirm('Reset all queries?')) {
-                 await fetch('/query-analyzer/api/reset', { method: 'POST', headers: {'X-CSRF-TOKEN': csrfToken} });
-                 refreshQueries();
-             }
-        }
+
         
         async function runExplain(id) {
             const container = document.getElementById(`explain-result-${id}`);
@@ -642,7 +832,7 @@
                             <button onclick="document.getElementById('explain-result-${id}').classList.add('hidden')" class="text-slate-400 hover:text-slate-600">&times;</button>
                         </div>
                     <div class="mb-6 bg-slate-900 text-slate-100 p-4 rounded-lg shadow-inner border-l-4 border-indigo-500">
-                        <h5 class="text-[10px] uppercase font-bold text-indigo-400 mb-2 tracking-tight">Humanized Summary</h5>
+                        <h5 class="text-[10px] uppercase font-bold text-indigo-400 mb-2 tracking-widest">Humanized Summary</h5>
                         <p class="text-xs leading-relaxed font-mono">${summary}</p>
                     </div>
 
@@ -681,10 +871,18 @@
                         </div>` : ''}
 
                         <!-- 2. ANALYZE Profile Tree -->
+                        <!-- 2. ANALYZE Profile Tree -->
+                        <!-- If we have the raw tree, show it first -->
+                        ${data.raw_analyze ? `
+                        <div class="mb-6">
+                            <h5 class="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Profiling Tree (Raw)</h5>
+                            <pre class="whitespace-pre-wrap bg-slate-900 text-green-400 p-4 rounded font-mono text-xs leading-tight border border-slate-700 shadow-lg select-text overflow-x-auto">${escapeHtml(data.raw_analyze)}</pre>
+                        </div>` : ''}
+
                         ${data.supports_analyze && analyze.length > 0 && analyze[0] ? `
                         <div>
-                            <h5 class="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Profiling Tree (Analyze)</h5>
-                            <pre class="whitespace-pre-wrap bg-slate-800 text-indigo-300 p-4 rounded font-mono text-xs leading-tight border border-slate-700 shadow-lg">${escapeHtml(String(Object.values(analyze[0])[0] || ''))}</pre>
+                            <h5 class="text-[10px] uppercase font-bold text-slate-400 mb-2 tracking-widest">Deep Analysis Explanation</h5>
+                            <div class="markdown-content bg-slate-50 text-slate-700 p-4 rounded text-xs leading-relaxed border border-slate-200 shadow-sm">${marked.parse(Object.values(analyze[0])[0] || '')}</div>
                         </div>` : ''}
                     </div>
                 </div>

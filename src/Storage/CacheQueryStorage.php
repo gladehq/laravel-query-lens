@@ -18,13 +18,13 @@ class CacheQueryStorage implements QueryStorage
 
     public function store(array $query): void
     {
-        $queries = $this->get();
+        $queries = $this->get(10000);
         
         // Add new query to the beginning
         array_unshift($queries, $query);
         
-        // Limit to max items (e.g. 1000) to prevent cache explosion
-        $queries = array_slice($queries, 0, 1000);
+        // Limit to max items (e.g. 10000) to prevent cache explosion
+        $queries = array_slice($queries, 0, 10000);
         
         Cache::store($this->store)->put($this->cacheKey, $queries, $this->ttl);
     }

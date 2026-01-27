@@ -62,7 +62,7 @@ return [
         'real_time_analysis' => env('QUERY_ANALYZER_REAL_TIME', true),
 
         // Minimum execution time to record a query (in seconds)
-        'min_execution_time' => env('QUERY_ANALYZER_MIN_TIME', 0.001),
+        'min_execution_time' => env('QUERY_ANALYZER_MIN_TIME', 0.0),
     ],
 
     /*

@@ -25,10 +25,18 @@ class QueryAnalyzerServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(QueryAnalyzer::class, function ($app) {
-            return new QueryAnalyzer(
+            $analyzer = new QueryAnalyzer(
                 $app['config']['query-analyzer'],
                 $app->make(\Laravel\QueryAnalyzer\Contracts\QueryStorage::class)
             );
+
+            // Initialize Request ID immediately for HTTP requests to catch early queries
+            // (e.g., Service Provider boot queries) that run before Middleware.
+            if (!$app->runningInConsole()) {
+                $analyzer->setRequestId((string) \Illuminate\Support\Str::orderedUuid());
+            }
+
+            return $analyzer;
         });
 
         $this->app->singleton(QueryListener::class);
@@ -55,6 +63,15 @@ class QueryAnalyzerServiceProvider extends ServiceProvider
 
         if (config('query-analyzer.enabled', false)) {
             $this->app->make(QueryListener::class)->register();
+            
+            // Register the middleware to track Request IDs
+            $router = $this->app['router'];
+            if ($router->hasMiddlewareGroup('web')) {
+                $router->pushMiddlewareToGroup('web', \Laravel\QueryAnalyzer\Http\Middleware\AnalyzeQueryMiddleware::class);
+            }
+            if ($router->hasMiddlewareGroup('api')) {
+                $router->pushMiddlewareToGroup('api', \Laravel\QueryAnalyzer\Http\Middleware\AnalyzeQueryMiddleware::class);
+            }
         }
     }
 

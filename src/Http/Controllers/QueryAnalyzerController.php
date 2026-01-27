@@ -56,7 +56,59 @@ class QueryAnalyzerController extends Controller
             // Silently fail if ANALYZE is not supported
         }
 
+        // Initialize default humanization from standard result
         $humanized = $this->humanizeExplain((array) $standardResult, (array) $analyzeResult);
+
+        // If EXPLAIN ANALYZE is supported, use the Deep Analyzer for superior insights
+        if ($supportsAnalyze && !empty($analyzeResult)) {
+            try {
+                $rawAnalyze = (string) (reset($analyzeResult[0]) ?: '');
+                $deepAnalyzer = new \Laravel\QueryAnalyzer\ExplainAnalyzer\ExplainAnalyzer();
+                $analysisResult = $deepAnalyzer->analyze($rawAnalyze);
+                
+                // 1. Get the full human-readable explanation
+                $fullExplanation = $deepAnalyzer->getExplainer()->explain($analysisResult);
+                
+                // Replace the raw output with the human-readable one for the 'Profiling Tree' section
+                // We keep the first key to maintain structure compatibility with the frontend
+                $firstKey = array_key_first((array) $analyzeResult[0]);
+                $analyzeResult = [[$firstKey => $fullExplanation]];
+
+                // 2. Enhance Summary and Insights using the deep analysis
+                // We overwrite the basic summary with the one from our analyzer
+                $summaryGenerator = new \Laravel\QueryAnalyzer\ExplainAnalyzer\Formatter\CompactFormatter();
+                // Extract just the summary line from compact formatter (it's the first line)
+                $compactStats = explode("\n", $summaryGenerator->format($analysisResult))[0] ?? '';
+                
+                // Combine health status with time/rows
+                $healthStatus = $analysisResult->getHealthStatus();
+                $healthMsg = match($healthStatus) {
+                    'critical' => 'Critical issues detected.',
+                    'warning' => 'Performance warnings found.',
+                    'needs_attention' => 'Some optimization opportunities identified.',
+                    'good' => 'Query appears healthy.',
+                    default => 'Analysis complete.'
+                };
+                
+                $humanized['summary'] = "{$healthMsg} {$compactStats}";
+
+                // 3. Add Deep Analysis Issues to Insights
+                $deepIssues = [];
+                foreach ($analysisResult->getIssuesBySeverity() as $issue) {
+                    $severity = strtoupper($issue->getSeverity()->value);
+                    $deepIssues[] = "{$issue->getSeverityEmoji()} **{$issue->getTitle()}** ({$severity}): {$issue->getMessage()}";
+                }
+                
+                if (!empty($deepIssues)) {
+                    // Prepend deep issues to existing standard insights
+                    $humanized['insights'] = array_merge($deepIssues, $humanized['insights']);
+                }
+
+            } catch (\Exception $e) {
+                // Fallback to raw output on error, log it
+                \Illuminate\Support\Facades\Log::warning('Deep Explain Analyzer failed: ' . $e->getMessage());
+            }
+        }
 
         // Detect if the result is a tree (for backward compatibility)
         $isStandardTree = count((array) ($standardResult[0] ?? [])) === 1;
@@ -64,6 +116,7 @@ class QueryAnalyzerController extends Controller
         return response()->json([
             'standard' => array_values((array) $standardResult),
             'analyze' => array_values((array) $analyzeResult),
+            'raw_analyze' => $rawAnalyze ?? null,
             'supports_analyze' => $supportsAnalyze,
             'summary' => $humanized['summary'] ?? 'No summary available.',
             'insights' => array_values($humanized['insights'] ?? []),
@@ -132,15 +185,13 @@ class QueryAnalyzerController extends Controller
             }
         }
 
-        // Analyze specific keywords for MySQL 8+ Tree
+        // Only add generic analyze insights if we haven't already processed them in the main logic
+        // (This function is still useful for the standard explain fallback)
         if (!empty($analyze)) {
             $firstRow = (array) ($analyze[0] ?? []);
             $plan = (string) (reset($firstRow) ?: '');
             if ($plan && str_contains($plan, 'disk')) {
                 $insights[] = "🔥 **Disk I/O**: The profiler detected that temporary data was written to disk, which is a major performance killer.";
-            }
-            if ($plan && (str_contains($plan, 'Table scan') || str_contains($plan, 'Full scan')) && empty($summaryParts)) {
-                 $insights[] = "❌ **Full Table Scan**: The profiler confirmed a full scan is occurring.";
             }
         }
 
@@ -173,20 +224,8 @@ class QueryAnalyzerController extends Controller
             $queries = $queries->where('request_id', $requestId)->values();
         }
 
-        // Apply filters
-        if ($type = $request->query('type')) {
-            $queries = $queries->filter(fn($q) => strtolower($q['analysis']['type']) === $type)->values();
-        }
-
-        if ($rating = $request->query('rating')) {
-            $queries = $queries->filter(fn($q) => ($q['analysis']['performance']['rating'] ?? 'unknown') === $rating)->values();
-        }
-
-        // Legacy slow_only filter (kept for backward compatibility)
-        if ($request->has('slow_only') && $request->boolean('slow_only')) {
-            $slowThreshold = config('query-analyzer.performance_thresholds.slow', 1.0);
-            $queries = $queries->where('time', '>', $slowThreshold);
-        }
+        // Apply shared filters
+        $queries = $this->applyFilters($queries, $request);
 
         // Apply sorting
         $sort = $request->query('sort', 'timestamp');
@@ -208,20 +247,26 @@ class QueryAnalyzerController extends Controller
         ]));
     }
 
-    public function requests(): JsonResponse
+    public function requests(Request $request): JsonResponse
     {
         // Aggregate/Group queries by Request ID efficiently
+        // We do NOT filter before grouping so that we preserve the request list
         $requests = $this->analyzer->getQueries()
             ->groupBy('request_id')
-            ->map(function ($group) {
+            ->map(function ($group) use ($request) {
                 $first = $group->first();
+                
+                // Analyze the relevant queries for this request based on filters
+                $filtered = $this->applyFilters($group, $request);
+                
                 return [
                     'request_id' => $first['request_id'],
                     'method' => $first['request_method'] ?? 'UNKNOWN',
                     'path' => $first['request_path'] ?? 'terminal',
                     'timestamp' => $first['timestamp'],
-                    'query_count' => $group->count(),
-                    'slow_count' => $group->where('analysis.performance.is_slow', true)->count(),
+                    'query_count' => $filtered->count(),
+                    'slow_count' => $filtered->where('analysis.performance.is_slow', true)->count(),
+                    'avg_time' => $filtered->average('time') ?? 0,
                 ];
             })
             ->sortByDesc('timestamp')
@@ -230,46 +275,40 @@ class QueryAnalyzerController extends Controller
         return $this->noCacheResponse(response()->json($requests));
     }
 
-    protected function queriesLogic(Request $request): JsonResponse
+    protected function applyFilters($queries, Request $request)
     {
-        $queries = $this->analyzer->getQueries();
-
-        // Filtering by type
-        if ($request->has('type') && $request->type !== 'all') {
-            $queries = $queries->where('analysis.type', strtoupper($request->type));
+        // Apply filters
+        if ($type = $request->query('type')) {
+            $queries = $queries->filter(fn($q) => strtolower($q['analysis']['type']) === $type)->values();
         }
 
-        // Filtering by performance rating
-        if ($request->has('rating') && $request->rating !== 'all') {
-            $queries = $queries->where('analysis.performance.rating', $request->rating);
+        if ($rating = $request->query('rating')) {
+            $queries = $queries->filter(fn($q) => ($q['analysis']['performance']['rating'] ?? 'unknown') === $rating)->values();
         }
 
-        // Legacy slow_only filter (kept for backward compatibility)
+        // Filter by issue type
+        if ($issueType = $request->query('issue_type')) {
+            $queries = $queries->filter(function ($q) use ($issueType) {
+                $issues = $q['analysis']['issues'] ?? [];
+                if (empty($issues)) return false;
+                
+                // Check if any issue matches the requested type
+                foreach ($issues as $issue) {
+                    if (strtolower($issue['type']) === strtolower($issueType)) {
+                        return true;
+                    }
+                }
+                return false;
+            })->values();
+        }
+
+        // Legacy slow_only filter
         if ($request->has('slow_only') && $request->boolean('slow_only')) {
             $slowThreshold = config('query-analyzer.performance_thresholds.slow', 1.0);
             $queries = $queries->where('time', '>', $slowThreshold);
         }
 
-        // Sorting
-        $sort = $request->input('sort', 'timestamp');
-        $order = $request->input('order', 'desc');
-
-        if ($sort === 'time') {
-            $queries = $order === 'asc' ? $queries->sortBy('time') : $queries->sortByDesc('time');
-        } elseif ($sort === 'complexity') {
-            $queries = $order === 'asc' ? $queries->sortBy('analysis.complexity.score') : $queries->sortByDesc('analysis.complexity.score');
-        } else {
-            $queries = $order === 'asc' ? $queries->sortBy('timestamp') : $queries->sortByDesc('timestamp');
-        }
-
-        if ($request->has('limit')) {
-            $queries = $queries->take((int) $request->limit);
-        }
-
-        return response()->json([
-            'queries' => $queries->values(),
-            'stats' => $this->analyzer->getStats(),
-        ]);
+        return $queries;
     }
 
     public function query(Request $request, string $id): JsonResponse
