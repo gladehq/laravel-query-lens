@@ -212,7 +212,7 @@ class QueryLensController extends Controller
 
     public function dashboard(): \Illuminate\Http\Response
     {
-        $response = response()->view('query-analyzer::dashboard', [
+        $response = response()->view('query-lens::dashboard', [
             'stats' => $this->analyzer->getStats(),
             'isEnabled' => config('query-lens.enabled', false),
         ]);

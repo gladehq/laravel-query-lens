@@ -10,7 +10,7 @@ use Coderflex\QueryLens\Services\AggregationService;
 
 class AggregateCommand extends Command
 {
-    protected $signature = 'query-analyzer:aggregate
+    protected $signature = 'query-lens:aggregate
                             {--period=hour : Period to aggregate (hour, day, week)}
                             {--date= : Specific date/time to aggregate (default: now)}
                             {--backfill= : Number of periods to backfill}';

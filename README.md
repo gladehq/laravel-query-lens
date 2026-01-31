@@ -1,86 +1,193 @@
-# Laravel Query Analyzer 🚀
+# Query Lens
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/laravel/query-analyzer.svg?style=flat-square)](https://packagist.org/packages/laravel/query-analyzer)
-[![Total Downloads](https://img.shields.io/packagist/dt/laravel/query-analyzer.svg?style=flat-square)](https://packagist.org/packages/laravel/query-analyzer)
-[![License](https://img.shields.io/packagist/l/laravel/query-analyzer.svg?style=flat-square)](https://packagist.org/packages/laravel/query-analyzer)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/coderflex/query-lens.svg?style=flat-square)](https://packagist.org/packages/coderflex/query-lens)
+[![Total Downloads](https://img.shields.io/packagist/dt/coderflex/query-lens.svg?style=flat-square)](https://packagist.org/packages/coderflex/query-lens)
+[![License](https://img.shields.io/packagist/l/coderflex/query-lens.svg?style=flat-square)](https://packagist.org/packages/coderflex/query-lens)
 
-A premium Laravel package that acts like an **Automated Database Administrator (DBA)**. It doesn't just list your queries; it analyzes them, finds performance killers, and suggests specific indexes.
-
----
-
-## 🔥 Key Features
-
--   **💎 Premium Dashboard**: A modern, real-time UI built with Tailwind CSS.
--   **💾 Persistence Layer**: All queries are persisted via Laravel Cache—view background jobs and API calls effortlessly.
--   **📍 Code Origin (Stack Trace)**: See exactly which **file and line number** triggered every query.
--   **🛠️ Index Suggestions**: Automated advice on which columns to index for slow queries.
--   **🔍 EXPLAIN Integration**: Run `EXPLAIN` or `EXPLAIN ANALYZE` directly from the dashboard to see raw execution plans.
--   **🔄 Request Grouping**: Queries are tagged with unique Request IDs to easily debug single page loads.
--   **🎯 N+1 Detection**: Heuristic detection of repeated query structures within a single request.
+A powerful Laravel package for analyzing, profiling, and optimizing database queries with real-time insights, performance monitoring, and a beautiful dashboard inspired by Laravel Pulse.
 
 ---
 
-## 🚀 Quick Start
+## Features
 
-### 1. Installation
+- **Real-time Dashboard** - Modern UI with live query monitoring
+- **Performance Trends** - Track P50, P95, P99 latency over time
+- **N+1 Detection** - Automatic detection of N+1 query problems
+- **EXPLAIN Analysis** - Run and interpret EXPLAIN plans from the dashboard
+- **Request Waterfall** - Visualize query timing within HTTP requests
+- **Code Origin Tracking** - See exactly which file and line triggered each query
+- **Top Queries Rankings** - Find slowest, most frequent, and most problematic queries
+- **Configurable Alerts** - Get notified about slow queries via log, email, or Slack
+- **App vs Vendor** - Distinguish between your code and package queries
+- **Export Capabilities** - Export query data for further analysis
+
+---
+
+## Installation
+
 ```bash
-composer require laravel/query-analyzer
+composer require coderflex/query-lens
 ```
 
-### 2. Publish Configuration
+Publish the configuration:
+
 ```bash
-php artisan vendor:publish --tag=query-analyzer-config
+php artisan vendor:publish --tag=query-lens-config
 ```
 
-### 3. Usage
-Visit `/query-analyzer` in your browser. (Ensure you are on `localhost` or have configured `allowed_ips`).
+Enable in your `.env`:
+
+```env
+QUERY_LENS_ENABLED=true
+```
 
 ---
 
-## 🛠️ Performance Analysis
+## Usage
 
-The analyzer automatically flags:
--   **Leading Wildcards**: `LIKE '%abc'` (kills indexing).
--   **Random Sorting**: `ORDER BY RAND()` (catastrophic on large tables).
--   **Deep Pagination**: High `OFFSET` values.
--   **Redundant Columns**: `SELECT *` usage.
--   **Functions in WHERE**: Non-sargable conditions like `WHERE DATE(created_at)`.
+Visit `/query-lens` in your browser to access the dashboard.
 
-### Automatic Indexing Suggestions
-If a query is slow, the analyzer parses the SQL and recommends:
-> "Consider adding an INDEX on table `users` columns: (email, status)"
+> By default, access is restricted to localhost. Configure `allowed_ips` or `auth_callback` in the config for other environments.
 
 ---
 
-## ⚙️ Configuration
+## Configuration
 
-Key options in `config/query-analyzer.php`:
+Key options in `config/query-lens.php`:
 
 ```php
 return [
-    'enabled' => env('QUERY_ANALYZER_ENABLED', true),
-    
-    // Thresholds for color-coded feedback
+    'enabled' => env('QUERY_LENS_ENABLED', false),
+
+    // Performance thresholds (in seconds)
     'performance_thresholds' => [
-        'fast' => 0.05,     // 50ms
-        'moderate' => 0.2, // 200ms
-        'slow' => 1.0,     // 1s
+        'fast' => 0.1,      // < 100ms
+        'moderate' => 0.5,  // < 500ms
+        'slow' => 1.0,      // < 1 second
     ],
 
+    // Storage driver: 'cache' or 'database'
+    'storage' => [
+        'driver' => env('QUERY_LENS_STORAGE', 'cache'),
+        'retention_days' => 7,
+    ],
+
+    // Dashboard access control
     'web_ui' => [
+        'enabled' => true,
         'allowed_ips' => ['127.0.0.1', '::1'],
-        'auth_callback' => null, // Add custom Gates/Logic here
+        'auth_callback' => null,
+    ],
+
+    // Alert notifications
+    'alerts' => [
+        'enabled' => env('QUERY_LENS_ALERTS', false),
+        'channels' => ['log'], // log, mail, slack
     ],
 ];
 ```
 
 ---
 
-## 📝 Performance Note
-This package performs **synchronous regex analysis** on queries to provide deep insights. It is intended for **local development and staging environments**. It is not recommended for high-traffic production environments unless `enabled` is set to `false`.
+## Database Storage (Optional)
+
+For persistent storage and historical data, use the database driver:
+
+```env
+QUERY_LENS_STORAGE=database
+```
+
+Publish and run migrations:
+
+```bash
+php artisan vendor:publish --tag=query-lens-migrations
+php artisan migrate
+```
+
+Schedule aggregation and cleanup:
+
+```php
+// app/Console/Kernel.php
+$schedule->command('query-lens:aggregate')->hourly();
+$schedule->command('query-lens:prune')->daily();
+```
 
 ---
 
-## ⚖️ License
+## Dashboard Features
+
+### Overview Stats
+- Total queries, slow queries, average time, P95 latency
+- Comparison with previous period
+
+### Query Analysis
+- Query type identification (SELECT, INSERT, UPDATE, DELETE)
+- Performance rating with color-coded badges
+- Complexity scoring
+- Issue detection (N+1, security, performance)
+- Actionable recommendations
+
+### Request Waterfall
+- Visual timeline of queries within a request
+- Duration bars scaled to total request time
+- Click-through to query details
+
+### Performance Trends
+- P50, P95, P99 latency charts
+- Hourly and daily granularity
+- Configurable time periods
+
+### Top Queries
+- Slowest by average execution time
+- Most frequent by call count
+- Most issues by detected problems
+
+### Alerts Management
+- Create custom alert rules
+- Multiple notification channels
+- Trigger history and logs
+
+---
+
+## Facade Usage
+
+```php
+use Coderflex\QueryLens\Facades\QueryLens;
+
+// Get all recorded queries
+$queries = QueryLens::getQueries();
+
+// Get statistics
+$stats = QueryLens::getStats();
+
+// Analyze a specific query
+$analysis = QueryLens::analyzeQuery($sql, $bindings, $time);
+
+// Clear all data
+QueryLens::reset();
+```
+
+---
+
+## Documentation
+
+For complete documentation, visit [docs/documentation.md](docs/documentation.md).
+
+---
+
+## Requirements
+
+- PHP 8.1+
+- Laravel 9.x, 10.x, 11.x, or 12.x
+
+---
+
+## License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+
+---
+
+## Credits
+
+Developed by [Coderflex](https://coderflex.com).

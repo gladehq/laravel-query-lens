@@ -9,7 +9,7 @@ use Coderflex\QueryLens\Services\DataRetentionService;
 
 class PruneCommand extends Command
 {
-    protected $signature = 'query-analyzer:prune
+    protected $signature = 'query-lens:prune
                             {--days= : Number of days to retain (default: from config)}
                             {--dry-run : Show what would be deleted without actually deleting}
                             {--force : Skip confirmation prompt}';
