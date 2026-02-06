@@ -63,7 +63,7 @@ class QueryAnalyzerController extends Controller
         if ($supportsAnalyze && !empty($analyzeResult)) {
             try {
                 $rawAnalyze = (string) (reset($analyzeResult[0]) ?: '');
-                $deepAnalyzer = new \Laravel\QueryAnalyzer\ExplainAnalyzer\ExplainAnalyzer();
+                $deepAnalyzer = new \Laravel\QueryAnalyzer\Services\Explain\Explainer();
                 $analysisResult = $deepAnalyzer->analyze($rawAnalyze);
                 
                 // 1. Get the full human-readable explanation
@@ -76,7 +76,7 @@ class QueryAnalyzerController extends Controller
 
                 // 2. Enhance Summary and Insights using the deep analysis
                 // We overwrite the basic summary with the one from our analyzer
-                $summaryGenerator = new \Laravel\QueryAnalyzer\ExplainAnalyzer\Formatter\CompactFormatter();
+                $summaryGenerator = new \Laravel\QueryAnalyzer\Services\Explain\Formatter\CompactFormatter();
                 // Extract just the summary line from compact formatter (it's the first line)
                 $compactStats = explode("\n", $summaryGenerator->format($analysisResult))[0] ?? '';
                 

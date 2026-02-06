@@ -2,25 +2,25 @@
 
 declare(strict_types=1);
 
-namespace Laravel\QueryAnalyzer\ExplainAnalyzer;
+namespace Laravel\QueryAnalyzer\Services\Explain;
 
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Parser\ExplainAnalyzeParser;
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Analyzer\QueryAnalyzer;
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Analyzer\AnalysisResult;
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Formatter\HumanExplainer;
+use Laravel\QueryAnalyzer\Services\Explain\Parser\ExplainAnalyzeParser;
+use Laravel\QueryAnalyzer\Services\Explain\Analyzer\QueryAnalyzer;
+use Laravel\QueryAnalyzer\Services\Explain\Analyzer\AnalysisResult;
+use Laravel\QueryAnalyzer\Services\Explain\Formatter\HumanExplainer;
 
 /**
  * Main entry point for MySQL EXPLAIN ANALYZE analysis.
  *
  * Usage:
- *   $analyzer = new ExplainAnalyzer();
+ *   $analyzer = new Explainer();
  *   $explanation = $analyzer->explain($explainOutput);
  *
  * Or for more control:
  *   $result = $analyzer->analyze($explainOutput);
  *   $explanation = $analyzer->getExplainer()->explain($result);
  */
-class ExplainAnalyzer
+class Explainer
 {
     private ExplainAnalyzeParser $parser;
     private QueryAnalyzer $analyzer;

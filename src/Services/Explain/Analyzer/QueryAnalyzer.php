@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Laravel\QueryAnalyzer\ExplainAnalyzer\Analyzer;
+namespace Laravel\QueryAnalyzer\Services\Explain\Analyzer;
 
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Nodes\OperationNode;
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Issues\Issue;
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Issues\IssueType;
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Issues\IssueSeverity;
+use Laravel\QueryAnalyzer\Services\Explain\Nodes\OperationNode;
+use Laravel\QueryAnalyzer\Services\Explain\Issues\Issue;
+use Laravel\QueryAnalyzer\Services\Explain\Issues\IssueType;
+use Laravel\QueryAnalyzer\Services\Explain\Issues\IssueSeverity;
 
 /**
  * Analyzes parsed execution plan nodes to identify performance issues.

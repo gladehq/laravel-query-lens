@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laravel\QueryAnalyzer\ExplainAnalyzer\Issues;
+namespace Laravel\QueryAnalyzer\Services\Explain\Issues;
 
 /**
  * Severity levels for detected issues.

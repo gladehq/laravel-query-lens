@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Laravel\QueryAnalyzer\ExplainAnalyzer\Issues;
+namespace Laravel\QueryAnalyzer\Services\Explain\Issues;
 
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Nodes\OperationNode;
+use Laravel\QueryAnalyzer\Services\Explain\Nodes\OperationNode;
 
 /**
  * Represents a detected issue in the execution plan.

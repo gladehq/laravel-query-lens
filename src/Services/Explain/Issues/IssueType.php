@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Laravel\QueryAnalyzer\ExplainAnalyzer\Issues;
+namespace Laravel\QueryAnalyzer\Services\Explain\Issues;
 
 /**
  * Types of issues that can be detected in an execution plan.

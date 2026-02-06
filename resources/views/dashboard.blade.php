@@ -555,7 +555,10 @@
 
     async function resetQueries() {
          if(confirm('Reset all analytics history?')) {
-             await fetch('/query-analyzer/api/reset', { method: 'POST', headers: {'X-CSRF-TOKEN': csrfToken} });
+             await fetch('/query-analyzer/api/reset', { 
+                 method: 'POST', 
+                 headers: {'X-CSRF-TOKEN': csrfToken, 'X-Requested-With': 'XMLHttpRequest'} 
+             });
              currentRequestId = null;
              refreshRequests(); // Refresh sidebar
              closeDetails();    // Close side panel
@@ -799,9 +802,17 @@
 
                 const response = await fetch(`/query-analyzer/api/explain?_cb=${Date.now()}`, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
+                    headers: { 
+                        'Content-Type': 'application/json', 
+                        'X-CSRF-TOKEN': csrfToken,
+                        'X-Requested-With': 'XMLHttpRequest'
+                    },
                     body: JSON.stringify({ sql: query.sql, bindings: query.bindings, connection: query.connection })
                 });
+
+                if (response.status === 419) {
+                    throw new Error('Session expired. Please refresh the page.');
+                }
 
                 if (!response.ok) throw new Error(`HTTP ${response.status} running explain`);
                 const data = await response.json();
@@ -899,7 +910,11 @@
         async function exportQueries(format) {
             const res = await fetch('/query-analyzer/api/export', { 
                 method: 'POST', 
-                headers: {'X-CSRF-TOKEN': csrfToken, 'Content-Type': 'application/json'},
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken, 
+                    'Content-Type': 'application/json',
+                    'X-Requested-With': 'XMLHttpRequest'
+                },
                 body: JSON.stringify({format})
             });
             const data = await res.json();

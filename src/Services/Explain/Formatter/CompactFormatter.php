@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Laravel\QueryAnalyzer\ExplainAnalyzer\Formatter;
+namespace Laravel\QueryAnalyzer\Services\Explain\Formatter;
 
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Analyzer\AnalysisResult;
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Nodes\OperationNode;
-use Laravel\QueryAnalyzer\ExplainAnalyzer\Issues\Issue;
+use Laravel\QueryAnalyzer\Services\Explain\Analyzer\AnalysisResult;
+use Laravel\QueryAnalyzer\Services\Explain\Nodes\OperationNode;
+use Laravel\QueryAnalyzer\Services\Explain\Issues\Issue;
 
 /**
  * Compact text formatter for terminal/log output.
