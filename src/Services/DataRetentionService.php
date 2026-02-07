@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\Services;
+namespace GladeHQ\QueryLens\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Log;
-use Coderflex\QueryLens\Models\AlertLog;
-use Coderflex\QueryLens\Models\AnalyzedQuery;
-use Coderflex\QueryLens\Models\AnalyzedRequest;
-use Coderflex\QueryLens\Models\QueryAggregate;
-use Coderflex\QueryLens\Models\TopQuery;
+use GladeHQ\QueryLens\Models\AlertLog;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\Models\AnalyzedRequest;
+use GladeHQ\QueryLens\Models\QueryAggregate;
+use GladeHQ\QueryLens\Models\TopQuery;
 
 class DataRetentionService
 {

@@ -1,6 +1,6 @@
 <?php
 
-namespace Coderflex\QueryLens\Http\Middleware;
+namespace GladeHQ\QueryLens\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
@@ -8,9 +8,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class QueryLensMiddleware
 {
-    protected \Coderflex\QueryLens\QueryAnalyzer $analyzer;
+    protected \GladeHQ\QueryLens\QueryAnalyzer $analyzer;
 
-    public function __construct(\Coderflex\QueryLens\QueryAnalyzer $analyzer)
+    public function __construct(\GladeHQ\QueryLens\QueryAnalyzer $analyzer)
     {
         $this->analyzer = $analyzer;
     }

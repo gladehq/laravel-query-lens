@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\Http\Controllers;
+namespace GladeHQ\QueryLens\Http\Controllers;
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
-use Coderflex\QueryLens\Models\Alert;
-use Coderflex\QueryLens\Models\AlertLog;
-use Coderflex\QueryLens\Services\AlertService;
+use GladeHQ\QueryLens\Models\Alert;
+use GladeHQ\QueryLens\Models\AlertLog;
+use GladeHQ\QueryLens\Services\AlertService;
 
 class AlertController extends Controller
 {

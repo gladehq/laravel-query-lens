@@ -1,10 +1,10 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
 use Orchestra\Testbench\TestCase;
-use Coderflex\QueryLens\QueryAnalyzer;
-use Coderflex\QueryLens\Http\Middleware\AnalyzeQueryMiddleware;
+use GladeHQ\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\Http\Middleware\AnalyzeQueryMiddleware;
 use Illuminate\Http\Request;
 use Mockery;
 

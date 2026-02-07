@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\ExplainAnalyzer;
+namespace GladeHQ\QueryLens\ExplainAnalyzer;
 
-use Coderflex\QueryLens\ExplainAnalyzer\Parser\ExplainAnalyzeParser;
-use Coderflex\QueryLens\ExplainAnalyzer\Analyzer\QueryAnalyzer;
-use Coderflex\QueryLens\ExplainAnalyzer\Analyzer\AnalysisResult;
-use Coderflex\QueryLens\ExplainAnalyzer\Formatter\HumanExplainer;
+use GladeHQ\QueryLens\ExplainAnalyzer\Parser\ExplainAnalyzeParser;
+use GladeHQ\QueryLens\ExplainAnalyzer\Analyzer\QueryAnalyzer;
+use GladeHQ\QueryLens\ExplainAnalyzer\Analyzer\AnalysisResult;
+use GladeHQ\QueryLens\ExplainAnalyzer\Formatter\HumanExplainer;
 
 /**
  * Main entry point for MySQL EXPLAIN ANALYZE analysis.

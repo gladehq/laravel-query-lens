@@ -1,15 +1,15 @@
 <?php
 
-namespace Coderflex\QueryLens\Http\Controllers;
+namespace GladeHQ\QueryLens\Http\Controllers;
 
 use Carbon\Carbon;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\View\View;
-use Coderflex\QueryLens\Contracts\QueryStorage;
-use Coderflex\QueryLens\QueryAnalyzer;
-use Coderflex\QueryLens\Services\AggregationService;
+use GladeHQ\QueryLens\Contracts\QueryStorage;
+use GladeHQ\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\Services\AggregationService;
 
 class QueryLensController extends Controller
 {
@@ -68,7 +68,7 @@ class QueryLensController extends Controller
         if ($supportsAnalyze && !empty($analyzeResult)) {
             try {
                 $rawAnalyze = (string) (reset($analyzeResult[0]) ?: '');
-                $deepAnalyzer = new \Coderflex\QueryLens\ExplainAnalyzer\ExplainAnalyzer();
+                $deepAnalyzer = new \GladeHQ\QueryLens\ExplainAnalyzer\ExplainAnalyzer();
                 $analysisResult = $deepAnalyzer->analyze($rawAnalyze);
                 
                 // 1. Get the full human-readable explanation
@@ -81,7 +81,7 @@ class QueryLensController extends Controller
 
                 // 2. Enhance Summary and Insights using the deep analysis
                 // We overwrite the basic summary with the one from our analyzer
-                $summaryGenerator = new \Coderflex\QueryLens\ExplainAnalyzer\Formatter\CompactFormatter();
+                $summaryGenerator = new \GladeHQ\QueryLens\ExplainAnalyzer\Formatter\CompactFormatter();
                 // Extract just the summary line from compact formatter (it's the first line)
                 $compactStats = explode("\n", $summaryGenerator->format($analysisResult))[0] ?? '';
                 
@@ -498,7 +498,7 @@ class QueryLensController extends Controller
         // Get recent alerts if using database storage
         $alerts = [];
         if ($this->storage->supportsPersistence()) {
-            $alertService = app(\Coderflex\QueryLens\Services\AlertService::class);
+            $alertService = app(\GladeHQ\QueryLens\Services\AlertService::class);
             $alerts = $alertService->getRecentAlerts(1, 10);
         }
 
@@ -536,7 +536,7 @@ class QueryLensController extends Controller
 
     public function storageInfo(): JsonResponse
     {
-        $retentionService = app(\Coderflex\QueryLens\Services\DataRetentionService::class);
+        $retentionService = app(\GladeHQ\QueryLens\Services\DataRetentionService::class);
 
         return response()->json([
             'driver' => config('query-lens.storage.driver', 'cache'),

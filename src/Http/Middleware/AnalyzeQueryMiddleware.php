@@ -1,10 +1,10 @@
 <?php
 
-namespace Coderflex\QueryLens\Http\Middleware;
+namespace GladeHQ\QueryLens\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Coderflex\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\QueryAnalyzer;
 use Illuminate\Support\Str;
 
 class AnalyzeQueryMiddleware

@@ -2,10 +2,10 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\Commands;
+namespace GladeHQ\QueryLens\Commands;
 
 use Illuminate\Console\Command;
-use Coderflex\QueryLens\Services\DataRetentionService;
+use GladeHQ\QueryLens\Services\DataRetentionService;
 
 class PruneCommand extends Command
 {

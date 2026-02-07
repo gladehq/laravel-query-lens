@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\DTOs;
+namespace GladeHQ\QueryLens\DTOs;
 
 enum QueryType: string
 {

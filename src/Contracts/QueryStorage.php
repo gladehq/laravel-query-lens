@@ -1,6 +1,6 @@
 <?php
 
-namespace Coderflex\QueryLens\Contracts;
+namespace GladeHQ\QueryLens\Contracts;
 
 use Carbon\Carbon;
 

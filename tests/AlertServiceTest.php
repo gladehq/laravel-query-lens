@@ -1,17 +1,17 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\Models\Alert;
-use Coderflex\QueryLens\Models\AnalyzedQuery;
-use Coderflex\QueryLens\Services\AlertService;
+use GladeHQ\QueryLens\Models\Alert;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\Services\AlertService;
 use Orchestra\Testbench\TestCase;
 
 class AlertServiceTest extends TestCase
 {
     protected function getPackageProviders($app): array
     {
-        return [\Coderflex\QueryLens\QueryLensServiceProvider::class];
+        return [\GladeHQ\QueryLens\QueryLensServiceProvider::class];
     }
 
     public function test_check_slow_query_alert_triggers_when_exceeds_threshold(): void

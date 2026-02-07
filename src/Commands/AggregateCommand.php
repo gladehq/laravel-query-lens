@@ -2,11 +2,11 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\Commands;
+namespace GladeHQ\QueryLens\Commands;
 
 use Carbon\Carbon;
 use Illuminate\Console\Command;
-use Coderflex\QueryLens\Services\AggregationService;
+use GladeHQ\QueryLens\Services\AggregationService;
 
 class AggregateCommand extends Command
 {

@@ -1,10 +1,10 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
 use Carbon\Carbon;
-use Coderflex\QueryLens\Services\AggregationService;
-use Coderflex\QueryLens\Tests\Fakes\InMemoryQueryStorage;
+use GladeHQ\QueryLens\Services\AggregationService;
+use GladeHQ\QueryLens\Tests\Fakes\InMemoryQueryStorage;
 use Orchestra\Testbench\TestCase;
 
 class AggregationServiceTest extends TestCase
@@ -13,7 +13,7 @@ class AggregationServiceTest extends TestCase
 
     protected function getPackageProviders($app): array
     {
-        return [\Coderflex\QueryLens\QueryLensServiceProvider::class];
+        return [\GladeHQ\QueryLens\QueryLensServiceProvider::class];
     }
 
     protected function setUp(): void

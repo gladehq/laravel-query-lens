@@ -1,22 +1,22 @@
 <?php
 
-namespace Coderflex\QueryLens;
+namespace GladeHQ\QueryLens;
 
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
-use Coderflex\QueryLens\Commands\AggregateCommand;
-use Coderflex\QueryLens\Commands\AnalyzeQueriesCommand;
-use Coderflex\QueryLens\Commands\PruneCommand;
-use Coderflex\QueryLens\Contracts\QueryStorage;
-use Coderflex\QueryLens\Http\Controllers\AlertController;
-use Coderflex\QueryLens\Http\Controllers\QueryLensController;
-use Coderflex\QueryLens\Http\Middleware\QueryLensMiddleware;
-use Coderflex\QueryLens\Listeners\QueryListener;
-use Coderflex\QueryLens\Services\AggregationService;
-use Coderflex\QueryLens\Services\AlertService;
-use Coderflex\QueryLens\Services\DataRetentionService;
-use Coderflex\QueryLens\Storage\CacheQueryStorage;
-use Coderflex\QueryLens\Storage\DatabaseQueryStorage;
+use GladeHQ\QueryLens\Commands\AggregateCommand;
+use GladeHQ\QueryLens\Commands\AnalyzeQueriesCommand;
+use GladeHQ\QueryLens\Commands\PruneCommand;
+use GladeHQ\QueryLens\Contracts\QueryStorage;
+use GladeHQ\QueryLens\Http\Controllers\AlertController;
+use GladeHQ\QueryLens\Http\Controllers\QueryLensController;
+use GladeHQ\QueryLens\Http\Middleware\QueryLensMiddleware;
+use GladeHQ\QueryLens\Listeners\QueryListener;
+use GladeHQ\QueryLens\Services\AggregationService;
+use GladeHQ\QueryLens\Services\AlertService;
+use GladeHQ\QueryLens\Services\DataRetentionService;
+use GladeHQ\QueryLens\Storage\CacheQueryStorage;
+use GladeHQ\QueryLens\Storage\DatabaseQueryStorage;
 
 class QueryLensServiceProvider extends ServiceProvider
 {
@@ -108,10 +108,10 @@ class QueryLensServiceProvider extends ServiceProvider
             // Register the middleware to track Request IDs
             $router = $this->app['router'];
             if ($router->hasMiddlewareGroup('web')) {
-                $router->pushMiddlewareToGroup('web', \Coderflex\QueryLens\Http\Middleware\AnalyzeQueryMiddleware::class);
+                $router->pushMiddlewareToGroup('web', \GladeHQ\QueryLens\Http\Middleware\AnalyzeQueryMiddleware::class);
             }
             if ($router->hasMiddlewareGroup('api')) {
-                $router->pushMiddlewareToGroup('api', \Coderflex\QueryLens\Http\Middleware\AnalyzeQueryMiddleware::class);
+                $router->pushMiddlewareToGroup('api', \GladeHQ\QueryLens\Http\Middleware\AnalyzeQueryMiddleware::class);
             }
         }
     }

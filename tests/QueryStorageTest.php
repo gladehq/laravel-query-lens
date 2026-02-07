@@ -1,9 +1,9 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
 use Carbon\Carbon;
-use Coderflex\QueryLens\Tests\Fakes\InMemoryQueryStorage;
+use GladeHQ\QueryLens\Tests\Fakes\InMemoryQueryStorage;
 use PHPUnit\Framework\TestCase;
 
 class QueryStorageTest extends TestCase

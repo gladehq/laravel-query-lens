@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\ExplainAnalyzer\Issues;
+namespace GladeHQ\QueryLens\ExplainAnalyzer\Issues;
 
 /**
  * Types of issues that can be detected in an execution plan.

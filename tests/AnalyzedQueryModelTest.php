@@ -1,15 +1,15 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
 use Orchestra\Testbench\TestCase;
 
 class AnalyzedQueryModelTest extends TestCase
 {
     protected function getPackageProviders($app): array
     {
-        return [\Coderflex\QueryLens\QueryLensServiceProvider::class];
+        return [\GladeHQ\QueryLens\QueryLensServiceProvider::class];
     }
 
     public function test_normalize_sql_replaces_numeric_values(): void

@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\Services;
+namespace GladeHQ\QueryLens\Services;
 
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Coderflex\QueryLens\Models\Alert;
-use Coderflex\QueryLens\Models\AlertLog;
-use Coderflex\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\Models\Alert;
+use GladeHQ\QueryLens\Models\AlertLog;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
 
 class AlertService
 {
@@ -192,7 +192,7 @@ class AlertService
             return;
         }
 
-        Mail::to($to)->send(new \Coderflex\QueryLens\Mail\AlertTriggered($alert, $message, $context));
+        Mail::to($to)->send(new \GladeHQ\QueryLens\Mail\AlertTriggered($alert, $message, $context));
     }
 
     protected function sendSlackNotification(Alert $alert, string $message, array $context): void

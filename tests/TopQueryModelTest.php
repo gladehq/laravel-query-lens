@@ -1,16 +1,16 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
 use Carbon\Carbon;
-use Coderflex\QueryLens\Models\TopQuery;
+use GladeHQ\QueryLens\Models\TopQuery;
 use Orchestra\Testbench\TestCase;
 
 class TopQueryModelTest extends TestCase
 {
     protected function getPackageProviders($app): array
     {
-        return [\Coderflex\QueryLens\QueryLensServiceProvider::class];
+        return [\GladeHQ\QueryLens\QueryLensServiceProvider::class];
     }
 
     public function test_get_period_start_for_hour(): void

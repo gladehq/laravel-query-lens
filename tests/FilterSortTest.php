@@ -1,11 +1,11 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
 use Orchestra\Testbench\TestCase;
-use Coderflex\QueryLens\QueryAnalyzer;
-use Coderflex\QueryLens\Storage\CacheQueryStorage;
-use Coderflex\QueryLens\Http\Controllers\QueryLensController;
+use GladeHQ\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\Storage\CacheQueryStorage;
+use GladeHQ\QueryLens\Http\Controllers\QueryLensController;
 use Illuminate\Http\Request;
 
 class FilterSortTest extends TestCase

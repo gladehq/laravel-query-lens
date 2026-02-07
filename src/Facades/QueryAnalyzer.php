@@ -1,10 +1,10 @@
 <?php
 
-namespace Coderflex\QueryLens\Facades;
+namespace GladeHQ\QueryLens\Facades;
 
 /**
  * @deprecated Use QueryLens facade instead
- * @see \Coderflex\QueryLens\Facades\QueryLens
+ * @see \GladeHQ\QueryLens\Facades\QueryLens
  */
 class QueryAnalyzer extends QueryLens
 {

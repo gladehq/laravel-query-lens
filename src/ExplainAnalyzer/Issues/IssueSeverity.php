@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\ExplainAnalyzer\Issues;
+namespace GladeHQ\QueryLens\ExplainAnalyzer\Issues;
 
 /**
  * Severity levels for detected issues.

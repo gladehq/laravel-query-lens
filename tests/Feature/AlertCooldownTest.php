@@ -1,10 +1,10 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests\Feature;
+namespace GladeHQ\QueryLens\Tests\Feature;
 
-use Coderflex\QueryLens\Models\Alert;
-use Coderflex\QueryLens\Models\AlertLog;
-use Coderflex\QueryLens\QueryLensServiceProvider;
+use GladeHQ\QueryLens\Models\Alert;
+use GladeHQ\QueryLens\Models\AlertLog;
+use GladeHQ\QueryLens\QueryLensServiceProvider;
 use Illuminate\Support\Facades\Config;
 use Orchestra\Testbench\TestCase;
 
@@ -36,7 +36,7 @@ class AlertCooldownTest extends TestCase
             'cooldown_minutes' => 5,
         ]);
 
-        $storage = app(\Coderflex\QueryLens\Contracts\QueryStorage::class);
+        $storage = app(\GladeHQ\QueryLens\Contracts\QueryStorage::class);
         
         $queryData = [
             'sql' => 'SELECT SLEEP(2)',

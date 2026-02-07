@@ -2,17 +2,17 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\Storage;
+namespace GladeHQ\QueryLens\Storage;
 
 use Carbon\Carbon;
 use Illuminate\Support\Str;
-use Coderflex\QueryLens\Contracts\QueryStorage;
-use Coderflex\QueryLens\Models\AnalyzedQuery;
-use Coderflex\QueryLens\Models\AlertLog;
-use Coderflex\QueryLens\Models\AnalyzedRequest;
-use Coderflex\QueryLens\Models\QueryAggregate;
-use Coderflex\QueryLens\Models\TopQuery;
-use Coderflex\QueryLens\Services\AlertService;
+use GladeHQ\QueryLens\Contracts\QueryStorage;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\Models\AlertLog;
+use GladeHQ\QueryLens\Models\AnalyzedRequest;
+use GladeHQ\QueryLens\Models\QueryAggregate;
+use GladeHQ\QueryLens\Models\TopQuery;
+use GladeHQ\QueryLens\Services\AlertService;
 
 class DatabaseQueryStorage implements QueryStorage
 {

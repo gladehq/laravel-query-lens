@@ -1,8 +1,8 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\QueryAnalyzer;
 use PHPUnit\Framework\TestCase;
 
 class AdvancedRecommendationsTest extends TestCase
@@ -14,7 +14,7 @@ class AdvancedRecommendationsTest extends TestCase
         parent::setUp();
         $this->analyzer = new QueryAnalyzer([
             'performance_thresholds' => ['slow' => 1.0]
-        ], new \Coderflex\QueryLens\Tests\Fakes\InMemoryQueryStorage());
+        ], new \GladeHQ\QueryLens\Tests\Fakes\InMemoryQueryStorage());
     }
 
     public function test_it_detects_random_order()

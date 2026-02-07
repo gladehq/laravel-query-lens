@@ -1,8 +1,8 @@
 <?php
 
-namespace Coderflex\QueryLens\Mail;
+namespace GladeHQ\QueryLens\Mail;
 
-use Coderflex\QueryLens\Models\Alert;
+use GladeHQ\QueryLens\Models\Alert;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;

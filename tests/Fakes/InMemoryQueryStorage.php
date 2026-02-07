@@ -1,9 +1,9 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests\Fakes;
+namespace GladeHQ\QueryLens\Tests\Fakes;
 
 use Carbon\Carbon;
-use Coderflex\QueryLens\Contracts\QueryStorage;
+use GladeHQ\QueryLens\Contracts\QueryStorage;
 
 class InMemoryQueryStorage implements QueryStorage
 {

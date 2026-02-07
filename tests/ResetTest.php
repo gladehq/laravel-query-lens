@@ -1,13 +1,13 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\Models\AlertLog;
-use Coderflex\QueryLens\Models\AnalyzedQuery;
-use Coderflex\QueryLens\Models\AnalyzedRequest;
-use Coderflex\QueryLens\Models\QueryAggregate;
-use Coderflex\QueryLens\Models\TopQuery;
-use Coderflex\QueryLens\Storage\DatabaseQueryStorage;
+use GladeHQ\QueryLens\Models\AlertLog;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\Models\AnalyzedRequest;
+use GladeHQ\QueryLens\Models\QueryAggregate;
+use GladeHQ\QueryLens\Models\TopQuery;
+use GladeHQ\QueryLens\Storage\DatabaseQueryStorage;
 use Orchestra\Testbench\TestCase;
 
 class ResetTest extends TestCase

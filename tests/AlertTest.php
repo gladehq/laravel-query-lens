@@ -1,10 +1,10 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\Models\Alert;
+use GladeHQ\QueryLens\Models\Alert;
 use Orchestra\Testbench\TestCase;
-use Coderflex\QueryLens\QueryLensServiceProvider;
+use GladeHQ\QueryLens\QueryLensServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class AlertTest extends TestCase
@@ -100,15 +100,15 @@ class AlertTest extends TestCase
             'cooldown_minutes' => 0,
         ]);
 
-        $query = new \Coderflex\QueryLens\Models\AnalyzedQuery();
+        $query = new \GladeHQ\QueryLens\Models\AnalyzedQuery();
         $query->time = 2.0;
         $query->sql = 'SELECT * FROM users';
         $query->id = 'test-query-id';
 
-        $service = new \Coderflex\QueryLens\Services\AlertService();
+        $service = new \GladeHQ\QueryLens\Services\AlertService();
         $service->checkAlerts($query);
 
-        \Illuminate\Support\Facades\Mail::assertSent(\Coderflex\QueryLens\Mail\AlertTriggered::class, function ($mail) {
+        \Illuminate\Support\Facades\Mail::assertSent(\GladeHQ\QueryLens\Mail\AlertTriggered::class, function ($mail) {
             return $mail->hasTo('test@example.com');
         });
     }
@@ -130,12 +130,12 @@ class AlertTest extends TestCase
             'cooldown_minutes' => 0,
         ]);
 
-        $query = new \Coderflex\QueryLens\Models\AnalyzedQuery();
+        $query = new \GladeHQ\QueryLens\Models\AnalyzedQuery();
         $query->time = 2.0;
         $query->sql = 'SELECT * FROM users';
         $query->id = 'test-query-id';
 
-        $service = new \Coderflex\QueryLens\Services\AlertService();
+        $service = new \GladeHQ\QueryLens\Services\AlertService();
         $service->checkAlerts($query);
 
         \Illuminate\Support\Facades\Http::assertSent(function ($request) {

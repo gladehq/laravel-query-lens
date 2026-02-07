@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\ExplainAnalyzer\Analyzer;
+namespace GladeHQ\QueryLens\ExplainAnalyzer\Analyzer;
 
-use Coderflex\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
-use Coderflex\QueryLens\ExplainAnalyzer\Issues\Issue;
-use Coderflex\QueryLens\ExplainAnalyzer\Issues\IssueType;
-use Coderflex\QueryLens\ExplainAnalyzer\Issues\IssueSeverity;
+use GladeHQ\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
+use GladeHQ\QueryLens\ExplainAnalyzer\Issues\Issue;
+use GladeHQ\QueryLens\ExplainAnalyzer\Issues\IssueType;
+use GladeHQ\QueryLens\ExplainAnalyzer\Issues\IssueSeverity;
 
 /**
  * Analyzes parsed execution plan nodes to identify performance issues.

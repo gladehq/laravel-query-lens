@@ -1,8 +1,8 @@
 # Query Lens
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/coderflex/query-lens.svg?style=flat-square)](https://packagist.org/packages/coderflex/query-lens)
-[![Total Downloads](https://img.shields.io/packagist/dt/coderflex/query-lens.svg?style=flat-square)](https://packagist.org/packages/coderflex/query-lens)
-[![License](https://img.shields.io/packagist/l/coderflex/query-lens.svg?style=flat-square)](https://packagist.org/packages/coderflex/query-lens)
+[![Latest Version on Packagist](https://img.shields.io/packagist/v/gladehq/laravel-query-lens.svg?style=flat-square)](https://packagist.org/packages/gladehq/laravel-query-lens)
+[![Total Downloads](https://img.shields.io/packagist/dt/gladehq/laravel-query-lens.svg?style=flat-square)](https://packagist.org/packages/gladehq/laravel-query-lens)
+[![License](https://img.shields.io/packagist/l/gladehq/laravel-query-lens.svg?style=flat-square)](https://packagist.org/packages/gladehq/laravel-query-lens)
 
 A powerful Laravel package for analyzing, profiling, and optimizing database queries with real-time insights, performance monitoring, and a beautiful dashboard inspired by Laravel Pulse.
 
@@ -26,7 +26,7 @@ A powerful Laravel package for analyzing, profiling, and optimizing database que
 ## Installation
 
 ```bash
-composer require coderflex/query-lens
+composer require gladehq/laravel-query-lens
 ```
 
 Publish the configuration:
@@ -162,7 +162,7 @@ $schedule->command('query-lens:prune')->daily();
 ## Facade Usage
 
 ```php
-use Coderflex\QueryLens\Facades\QueryLens;
+use GladeHQ\QueryLens\Facades\QueryLens;
 
 // Get all recorded queries
 $queries = QueryLens::getQueries();
@@ -181,7 +181,7 @@ QueryLens::reset();
 
 ## Documentation
 
-For complete documentation, visit [docs/documentation.md](docs/documentation.md).
+For complete documentation, visit [docs/user_guide.md](docs/user_guide.md).
 
 ---
 
@@ -200,4 +200,4 @@ The MIT License (MIT). Please see [License File](LICENSE.md) for more informatio
 
 ## Credits
 
-Developed by [Coderflex](https://coderflex.com).
+Developed by [GladeHQ](https://gladehq.com).

@@ -2,15 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\Services;
+namespace GladeHQ\QueryLens\Services;
 
 use Carbon\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use Coderflex\QueryLens\Contracts\QueryStorage;
-use Coderflex\QueryLens\Models\AnalyzedQuery;
-use Coderflex\QueryLens\Models\QueryAggregate;
-use Coderflex\QueryLens\Models\TopQuery;
+use GladeHQ\QueryLens\Contracts\QueryStorage;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\Models\QueryAggregate;
+use GladeHQ\QueryLens\Models\TopQuery;
 
 class AggregationService
 {

@@ -1,9 +1,9 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
 use Illuminate\Support\Facades\Cache;
-use Coderflex\QueryLens\Storage\CacheQueryStorage;
+use GladeHQ\QueryLens\Storage\CacheQueryStorage;
 use Orchestra\Testbench\TestCase;
 
 class CacheQueryStorageTest extends TestCase

@@ -1,8 +1,8 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\QueryAnalyzer;
 use Orchestra\Testbench\TestCase;
 
 class QueryAnalyzerTest extends TestCase
@@ -11,7 +11,7 @@ class QueryAnalyzerTest extends TestCase
 
     protected function getPackageProviders($app): array
     {
-        return [\Coderflex\QueryLens\QueryLensServiceProvider::class];
+        return [\GladeHQ\QueryLens\QueryLensServiceProvider::class];
     }
 
     protected function setUp(): void
@@ -23,7 +23,7 @@ class QueryAnalyzerTest extends TestCase
                 'moderate' => 0.5,
                 'slow' => 1.0,
             ]
-        ], new \Coderflex\QueryLens\Tests\Fakes\InMemoryQueryStorage());
+        ], new \GladeHQ\QueryLens\Tests\Fakes\InMemoryQueryStorage());
     }
 
     public function test_it_can_record_queries(): void

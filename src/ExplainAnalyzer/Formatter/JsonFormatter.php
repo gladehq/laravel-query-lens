@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\ExplainAnalyzer\Formatter;
+namespace GladeHQ\QueryLens\ExplainAnalyzer\Formatter;
 
-use Coderflex\QueryLens\ExplainAnalyzer\Analyzer\AnalysisResult;
+use GladeHQ\QueryLens\ExplainAnalyzer\Analyzer\AnalysisResult;
 
 /**
  * Formats analysis results as JSON.

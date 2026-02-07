@@ -1,9 +1,9 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\Http\Controllers\QueryLensController;
-use Coderflex\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\Http\Controllers\QueryLensController;
+use GladeHQ\QueryLens\QueryAnalyzer;
 use Orchestra\Testbench\TestCase;
 use ReflectionMethod;
 
@@ -14,7 +14,7 @@ class HumanizedExplainTest extends TestCase
     protected function setUp(): void
     {
         parent::setUp();
-        $storage = new \Coderflex\QueryLens\Tests\Fakes\InMemoryQueryStorage();
+        $storage = new \GladeHQ\QueryLens\Tests\Fakes\InMemoryQueryStorage();
         $analyzer = new QueryAnalyzer([], $storage);
         $this->controller = new QueryLensController($analyzer, $storage);
     }

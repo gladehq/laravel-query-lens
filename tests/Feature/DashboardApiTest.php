@@ -1,8 +1,8 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests\Feature;
+namespace GladeHQ\QueryLens\Tests\Feature;
 
-use Coderflex\QueryLens\QueryLensServiceProvider;
+use GladeHQ\QueryLens\QueryLensServiceProvider;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Orchestra\Testbench\TestCase;
 

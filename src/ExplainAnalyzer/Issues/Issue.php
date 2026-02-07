@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\ExplainAnalyzer\Issues;
+namespace GladeHQ\QueryLens\ExplainAnalyzer\Issues;
 
-use Coderflex\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
+use GladeHQ\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
 
 /**
  * Represents a detected issue in the execution plan.

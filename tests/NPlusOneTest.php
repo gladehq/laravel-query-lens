@@ -1,10 +1,10 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\Models\AnalyzedQuery;
-use Coderflex\QueryLens\QueryAnalyzer;
-use Coderflex\QueryLens\Storage\DatabaseQueryStorage;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\Storage\DatabaseQueryStorage;
 use Orchestra\Testbench\TestCase;
 
 class NPlusOneTest extends TestCase

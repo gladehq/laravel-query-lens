@@ -1,6 +1,6 @@
 <?php
 
-namespace Coderflex\QueryLens\Facades;
+namespace GladeHQ\QueryLens\Facades;
 
 use Illuminate\Support\Facades\Facade;
 
@@ -15,6 +15,6 @@ class QueryLens extends Facade
 {
     protected static function getFacadeAccessor(): string
     {
-        return \Coderflex\QueryLens\QueryAnalyzer::class;
+        return \GladeHQ\QueryLens\QueryAnalyzer::class;
     }
 }

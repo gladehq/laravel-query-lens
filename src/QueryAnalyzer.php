@@ -1,11 +1,11 @@
 <?php
 
-namespace Coderflex\QueryLens;
+namespace GladeHQ\QueryLens;
 
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
-use Coderflex\QueryLens\Contracts\QueryStorage;
-use Coderflex\QueryLens\Models\AnalyzedQuery;
+use GladeHQ\QueryLens\Contracts\QueryStorage;
+use GladeHQ\QueryLens\Models\AnalyzedQuery;
 
 class QueryAnalyzer
 {

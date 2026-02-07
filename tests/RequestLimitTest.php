@@ -1,10 +1,10 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
 use Orchestra\Testbench\TestCase;
-use Coderflex\QueryLens\QueryAnalyzer;
-use Coderflex\QueryLens\Storage\CacheQueryStorage;
+use GladeHQ\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\Storage\CacheQueryStorage;
 use Illuminate\Support\Facades\Cache;
 
 class RequestLimitTest extends TestCase

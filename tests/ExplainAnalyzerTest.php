@@ -2,14 +2,14 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
 use Orchestra\Testbench\TestCase;
-use Coderflex\QueryLens\ExplainAnalyzer\ExplainAnalyzer;
-use Coderflex\QueryLens\ExplainAnalyzer\Parser\ExplainAnalyzeParser;
-use Coderflex\QueryLens\ExplainAnalyzer\Analyzer\QueryAnalyzer;
-use Coderflex\QueryLens\ExplainAnalyzer\Issues\IssueType;
-use Coderflex\QueryLens\ExplainAnalyzer\Issues\IssueSeverity;
+use GladeHQ\QueryLens\ExplainAnalyzer\ExplainAnalyzer;
+use GladeHQ\QueryLens\ExplainAnalyzer\Parser\ExplainAnalyzeParser;
+use GladeHQ\QueryLens\ExplainAnalyzer\Analyzer\QueryAnalyzer;
+use GladeHQ\QueryLens\ExplainAnalyzer\Issues\IssueType;
+use GladeHQ\QueryLens\ExplainAnalyzer\Issues\IssueSeverity;
 
 class ExplainAnalyzerTest extends TestCase
 {

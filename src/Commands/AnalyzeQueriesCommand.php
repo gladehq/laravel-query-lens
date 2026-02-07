@@ -1,9 +1,9 @@
 <?php
 
-namespace Coderflex\QueryLens\Commands;
+namespace GladeHQ\QueryLens\Commands;
 
 use Illuminate\Console\Command;
-use Coderflex\QueryLens\QueryAnalyzer;
+use GladeHQ\QueryLens\QueryAnalyzer;
 
 class AnalyzeQueriesCommand extends Command
 {

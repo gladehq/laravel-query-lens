@@ -1,5 +1,5 @@
 {
-    "name": "coderflex/query-lens",
+    "name": "gladehq/laravel-query-lens",
     "description": "A Laravel package for analyzing and optimizing database queries with performance insights",
     "type": "library",
     "license": "MIT",
@@ -16,8 +16,9 @@
     ],
     "authors": [
         {
-            "name": "Coderflex",
-            "email": "developers@coderflex.com"
+            "name": "Dulitha Rajapaksha",
+            "organization": "GladeHQ",
+            "email": "dulithamahishka94@gmail.com"
         }
     ],
     "require": {
@@ -33,18 +34,18 @@
     },
     "autoload": {
         "psr-4": {
-            "Coderflex\\QueryLens\\": "src/"
+            "GladeHQ\\QueryLens\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Coderflex\\QueryLens\\Tests\\": "tests/"
+            "GladeHQ\\QueryLens\\Tests\\": "tests/"
         }
     },
     "extra": {
         "laravel": {
             "providers": [
-                "Coderflex\\QueryLens\\QueryLensServiceProvider"
+                "GladeHQ\\QueryLens\\QueryLensServiceProvider"
             ]
         }
     },

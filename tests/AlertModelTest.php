@@ -1,15 +1,15 @@
 <?php
 
-namespace Coderflex\QueryLens\Tests;
+namespace GladeHQ\QueryLens\Tests;
 
-use Coderflex\QueryLens\Models\Alert;
+use GladeHQ\QueryLens\Models\Alert;
 use Orchestra\Testbench\TestCase;
 
 class AlertModelTest extends TestCase
 {
     protected function getPackageProviders($app): array
     {
-        return [\Coderflex\QueryLens\QueryLensServiceProvider::class];
+        return [\GladeHQ\QueryLens\QueryLensServiceProvider::class];
     }
 
     public function test_can_trigger_returns_true_when_never_triggered(): void

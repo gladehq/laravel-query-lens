@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Coderflex\QueryLens\ExplainAnalyzer\Formatter;
+namespace GladeHQ\QueryLens\ExplainAnalyzer\Formatter;
 
-use Coderflex\QueryLens\ExplainAnalyzer\Analyzer\AnalysisResult;
-use Coderflex\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
-use Coderflex\QueryLens\ExplainAnalyzer\Issues\Issue;
-use Coderflex\QueryLens\ExplainAnalyzer\Issues\IssueSeverity;
+use GladeHQ\QueryLens\ExplainAnalyzer\Analyzer\AnalysisResult;
+use GladeHQ\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
+use GladeHQ\QueryLens\ExplainAnalyzer\Issues\Issue;
+use GladeHQ\QueryLens\ExplainAnalyzer\Issues\IssueSeverity;
 
 /**
  * Generates human-readable explanations from analysis results.
