@@ -5,3 +5,4 @@ composer.lock
 .env.testing
 .DS_Store
 Thumbs.db
+.idea
