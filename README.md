@@ -1,203 +1,125 @@
-# Query Lens
+# GladeHQ Laravel Query Lens
 
 [![Latest Version on Packagist](https://img.shields.io/packagist/v/gladehq/laravel-query-lens.svg?style=flat-square)](https://packagist.org/packages/gladehq/laravel-query-lens)
 [![Total Downloads](https://img.shields.io/packagist/dt/gladehq/laravel-query-lens.svg?style=flat-square)](https://packagist.org/packages/gladehq/laravel-query-lens)
 [![License](https://img.shields.io/packagist/l/gladehq/laravel-query-lens.svg?style=flat-square)](https://packagist.org/packages/gladehq/laravel-query-lens)
 
-A powerful Laravel package for analyzing, profiling, and optimizing database queries with real-time insights, performance monitoring, and a beautiful dashboard inspired by Laravel Pulse.
+**Query Lens** is a powerful observability dashboard for Laravel applications. It provides real-time insights into your database performance, helping you spot N+1 queries, slow database operations, and inefficient patterns instantly.
+
+![Dashboard Overview](docs/images/dashboard_overview.png)
 
 ---
 
-## Features
+## 📚 Documentation
 
-- **Real-time Dashboard** - Modern UI with live query monitoring
-- **Performance Trends** - Track P50, P95, P99 latency over time
-- **N+1 Detection** - Automatic detection of N+1 query problems
-- **EXPLAIN Analysis** - Run and interpret EXPLAIN plans from the dashboard
-- **Request Waterfall** - Visualize query timing within HTTP requests
-- **Code Origin Tracking** - See exactly which file and line triggered each query
-- **Top Queries Rankings** - Find slowest, most frequent, and most problematic queries
-- **Configurable Alerts** - Get notified about slow queries via log, email, or Slack
-- **App vs Vendor** - Distinguish between your code and package queries
-- **Export Capabilities** - Export query data for further analysis
+For a deep dive into all features, configuration, and advanced usage, please read the **[Official Documentation](docs/documentation.md)**.
 
 ---
 
-## Installation
+## ✨ Features
+
+- **🚀 Real-time Monitoring**: Watch queries execute live as you browse your app.
+- **🔍 Deep Analysis**: Integrated `EXPLAIN` runner to visualize execution plans and index usage.
+- **🌊 Request Waterfall**: Visualize query timing relative to your HTTP requests.
+- **🚨 Intelligent Alerts**: Get notified via Slack, Email, or Logs when queries exceed thresholds.
+- **📉 Trend Tracking**: Monitor P95/P99 latency over time to catch performance regressions.
+- **📍 Code Origin**: Pinpoint exactly which file and line of code triggered a query.
+
+---
+
+## 🚀 Installation
+
+Install the package via Composer:
 
 ```bash
 composer require gladehq/laravel-query-lens
 ```
 
-Publish the configuration:
+Publish the configuration file:
 
 ```bash
 php artisan vendor:publish --tag=query-lens-config
 ```
 
-Enable in your `.env`:
+Enable it in your `.env` file:
 
 ```env
 QUERY_LENS_ENABLED=true
 ```
 
----
+Visit `/query-lens` in your browser to start analyzing!
 
-## Usage
-
-Visit `/query-lens` in your browser to access the dashboard.
-
-> By default, access is restricted to localhost. Configure `allowed_ips` or `auth_callback` in the config for other environments.
+> **Note**: By default, access is restricted to non-local environments. See [Documentation](docs/documentation.md#security) for production configuration.
 
 ---
 
-## Configuration
+## ⚙️ Configuration (Quick Start)
 
-Key options in `config/query-lens.php`:
+Here are the most common options in `config/query-lens.php`:
 
 ```php
 return [
     'enabled' => env('QUERY_LENS_ENABLED', false),
 
-    // Performance thresholds (in seconds)
+    // Define what "slow" means for your app
     'performance_thresholds' => [
-        'fast' => 0.1,      // < 100ms
-        'moderate' => 0.5,  // < 500ms
-        'slow' => 1.0,      // < 1 second
+        'slow' => 1.0, // Queries taking > 1s are marked slow
     ],
 
-    // Storage driver: 'cache' or 'database'
+    // Choose 'cache' (ephemeral) or 'database' (persistent)
     'storage' => [
         'driver' => env('QUERY_LENS_STORAGE', 'cache'),
-        'retention_days' => 7,
     ],
 
-    // Dashboard access control
-    'web_ui' => [
-        'enabled' => true,
-        'allowed_ips' => ['127.0.0.1', '::1'],
-        'auth_callback' => null,
-    ],
-
-    // Alert notifications
+    // Configure Alerts
     'alerts' => [
         'enabled' => env('QUERY_LENS_ALERTS', false),
-        'channels' => ['log'], // Available: log, mail, slack
+        'channels' => ['mail', 'slack'],
         'mail_to' => env('QUERY_LENS_MAIL_TO'),
         'slack_webhook' => env('QUERY_LENS_SLACK_WEBHOOK'),
     ],
 ];
 ```
 
-Configure the environment variables in your `.env`:
-
-```env
-QUERY_LENS_ALERTS=true
-QUERY_LENS_MAIL_TO=admin@example.com
-QUERY_LENS_SLACK_WEBHOOK=https://hooks.slack.com/services/YOUR/WEBHOOK/URL
-```
-
 ---
 
-## Database Storage (Optional)
+## 🛠️ Advanced Usage
 
-For persistent storage and historical data, use the database driver:
-
-```env
-QUERY_LENS_STORAGE=database
-```
-
-Publish and run migrations:
-
-```bash
-php artisan vendor:publish --tag=query-lens-migrations
-php artisan migrate
-```
-
-Schedule aggregation and cleanup:
-
-```php
-// app/Console/Kernel.php
-$schedule->command('query-lens:aggregate')->hourly();
-$schedule->command('query-lens:prune')->daily();
-```
-
----
-
-## Dashboard Features
-
-### Overview Stats
-- Total queries, slow queries, average time, P95 latency
-- Comparison with previous period
-
-### Query Analysis
-- Query type identification (SELECT, INSERT, UPDATE, DELETE)
-- Performance rating with color-coded badges
-- Complexity scoring
-- Issue detection (N+1, security, performance)
-- Actionable recommendations
-
-### Request Waterfall
-- Visual timeline of queries within a request
-- Duration bars scaled to total request time
-- Click-through to query details
-
-### Performance Trends
-- P50, P95, P99 latency charts
-- Hourly and daily granularity
-- Configurable time periods
-
-### Top Queries
-- Slowest by average execution time
-- Most frequent by call count
-- Most issues by detected problems
-
-### Alerts Management
-- Create custom alert rules
-- Multiple notification channels
-- Trigger history and logs
-
----
-
-## Facade Usage
+### Facade API
 
 ```php
 use GladeHQ\QueryLens\Facades\QueryLens;
 
-// Get all recorded queries
-$queries = QueryLens::getQueries();
+// Manually analyze a query string
+$analysis = QueryLens::analyzeQuery('SELECT * FROM users WHERE active = 1');
 
-// Get statistics
+// Get current session stats
 $stats = QueryLens::getStats();
+```
 
-// Analyze a specific query
-$analysis = QueryLens::analyzeQuery($sql, $bindings, $time);
+### Console Commands
 
-// Clear all data
-QueryLens::reset();
+- `php artisan query-lens:aggregate`: Pre-calculate hourly trends (for Database driver).
+- `php artisan query-lens:prune`: Clean up old data.
+
+---
+
+## 🧪 Testing
+
+Run the test suite to ensure everything is working correctly:
+
+```bash
+composer test
 ```
 
 ---
 
-## Documentation
-
-For complete documentation, visit [docs/user_guide.md](docs/user_guide.md).
-
----
-
-## Requirements
-
-- PHP 8.1+
-- Laravel 9.x, 10.x, 11.x, or 12.x
-
----
-
-## License
+## 📄 License
 
 The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
 
 ---
 
-## Credits
+## 👨‍💻 Credits
 
-Developed by [GladeHQ](https://gladehq.com).
+Developed by **[Dulitha Rajapaksha](https://github.com/dulithamahishka94)** for **[GladeHQ](https://gladehq.dulitharajapaksha.com)**.

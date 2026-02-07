@@ -20,7 +20,7 @@ return [
     |--------------------------------------------------------------------------
     |
     | Configure the web-based dashboard for viewing query analysis results.
-    | The web UI provides a real-time interface similar to Laravel Pulse.
+    | The web UI provides a real-time interface.
     |
     */
     'web_ui' => [
