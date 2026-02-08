@@ -6,13 +6,11 @@
 
 **Query Lens** is a powerful observability dashboard for Laravel applications. It provides real-time insights into your database performance, helping you spot N+1 queries, slow database operations, and inefficient patterns instantly.
 
-![Dashboard Overview](docs/images/dashboard_overview.png)
-
 ---
 
 ## 📚 Documentation
 
-For a deep dive into all features, configuration, and advanced usage, please read the **[Official Documentation](docs/documentation.md)**.
+For a deep dive into all features, configuration, and advanced usage, please visit the **[Official Website](https://querylens.dulitharajapaksha.com)**.
 
 ---
 
@@ -49,7 +47,7 @@ QUERY_LENS_ENABLED=true
 
 Visit `/query-lens` in your browser to start analyzing!
 
-> **Note**: By default, access is restricted to non-local environments. See [Documentation](docs/documentation.md#security) for production configuration.
+> **Note**: By default, access is restricted to non-local environments. See [Documentation](https://querylens.dulitharajapaksha.com/docs/) for production configuration.
 
 ---
 
@@ -116,10 +114,10 @@ composer test
 
 ## 📄 License
 
-The MIT License (MIT). Please see [License File](LICENSE.md) for more information.
+The MIT License (MIT).
 
 ---
 
 ## 👨‍💻 Credits
 
-Developed by **[Dulitha Rajapaksha](https://github.com/dulithamahishka94)** for **[GladeHQ](https://gladehq.dulitharajapaksha.com)**.
+Developed by **[Dulitha Rajapaksha](https://github.com/dulithamahishka94)** for **[GladeHQ](https://profile.dulitharajapaksha.com)**.
