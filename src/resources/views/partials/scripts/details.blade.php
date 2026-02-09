@@ -45,7 +45,7 @@
                     <div class="px-4 py-3 border-b border-slate-700/50 flex items-center justify-between bg-slate-800/30">
                         <h3 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">SQL Statement</h3>
                         ${analysis.type === 'SELECT' ? `
-                            <button onclick="runExplain('${query.id}')" class="px-2 py-1 bg-indigo-500/20 text-indigo-400 text-[10px] font-semibold rounded hover:bg-indigo-500/30 transition-colors border border-indigo-500/20">
+                            <button type="button" onclick="runExplain('${query.id}')" class="px-2 py-1 bg-indigo-500/20 text-indigo-400 text-[10px] font-semibold rounded hover:bg-indigo-500/30 transition-colors border border-indigo-500/20">
                                 RUN EXPLAIN
                             </button>
                         ` : ''}
@@ -178,6 +178,9 @@
 
         try {
             const queryRes = await fetch(`/query-lens/api/query/${id}`);
+            if (!queryRes.ok) {
+                throw new Error(`Failed to fetch query: ${queryRes.status} ${queryRes.statusText}`);
+            }
             const query = await queryRes.json();
 
             const res = await fetch('/query-lens/api/explain', {
@@ -185,6 +188,21 @@
                 headers: { 'Content-Type': 'application/json', 'X-CSRF-TOKEN': csrfToken },
                 body: JSON.stringify({ sql: query.sql, bindings: query.bindings, connection: query.connection })
             });
+
+            // Check if response is OK before parsing
+            if (!res.ok) {
+                const text = await res.text();
+                throw new Error(`Server returned ${res.status}: ${text.substring(0, 200)}`);
+            }
+
+            // Check content type
+            const contentType = res.headers.get('content-type');
+            if (!contentType || !contentType.includes('application/json')) {
+                const text = await res.text();
+                console.error('Non-JSON response:', text);
+                throw new Error(`Expected JSON but got ${contentType}. Response: ${text.substring(0, 200)}`);
+            }
+
             const data = await res.json();
 
             if (data.error) {

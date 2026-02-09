@@ -5,20 +5,20 @@ declare(strict_types=1);
 namespace GladeHQ\QueryLens\Tests;
 
 use Orchestra\Testbench\TestCase;
-use GladeHQ\QueryLens\ExplainAnalyzer\ExplainAnalyzer;
-use GladeHQ\QueryLens\ExplainAnalyzer\Parser\ExplainAnalyzeParser;
-use GladeHQ\QueryLens\ExplainAnalyzer\Analyzer\QueryAnalyzer;
-use GladeHQ\QueryLens\ExplainAnalyzer\Issues\IssueType;
-use GladeHQ\QueryLens\ExplainAnalyzer\Issues\IssueSeverity;
+use GladeHQ\QueryLens\Services\Explain\Explainer;
+use GladeHQ\QueryLens\Services\Explain\Parser\ExplainAnalyzeParser;
+use GladeHQ\QueryLens\Services\Explain\Analyzer\QueryAnalyzer;
+use GladeHQ\QueryLens\Services\Explain\Issues\IssueType;
+use GladeHQ\QueryLens\Services\Explain\Issues\IssueSeverity;
 
 class ExplainAnalyzerTest extends TestCase
 {
-    private ExplainAnalyzer $analyzer;
+    private Explainer $analyzer;
 
     protected function setUp(): void
     {
         parent::setUp();
-        $this->analyzer = new ExplainAnalyzer();
+        $this->analyzer = new Explainer();
     }
 
     public function testBasicParsing(): void
@@ -132,7 +132,7 @@ EXPLAIN;
 -> Limit: 1 row(s)  (cost=1853 rows=1) (actual time=7.91..7.91 rows=1 loops=1)
 EXPLAIN;
 
-        $explanation = ExplainAnalyzer::create()
+        $explanation = Explainer::create()
             ->withoutMarkdown()
             ->explain($input);
 

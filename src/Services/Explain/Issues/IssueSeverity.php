@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GladeHQ\QueryLens\ExplainAnalyzer\Issues;
+namespace GladeHQ\QueryLens\Services\Explain\Issues;
 
 /**
  * Severity levels for detected issues.

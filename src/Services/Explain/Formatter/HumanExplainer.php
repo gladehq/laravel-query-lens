@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace GladeHQ\QueryLens\ExplainAnalyzer\Formatter;
+namespace GladeHQ\QueryLens\Services\Explain\Formatter;
 
-use GladeHQ\QueryLens\ExplainAnalyzer\Analyzer\AnalysisResult;
-use GladeHQ\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
-use GladeHQ\QueryLens\ExplainAnalyzer\Issues\Issue;
-use GladeHQ\QueryLens\ExplainAnalyzer\Issues\IssueSeverity;
+use GladeHQ\QueryLens\Services\Explain\Analyzer\AnalysisResult;
+use GladeHQ\QueryLens\Services\Explain\Nodes\OperationNode;
+use GladeHQ\QueryLens\Services\Explain\Issues\Issue;
+use GladeHQ\QueryLens\Services\Explain\Issues\IssueSeverity;
 
 /**
  * Generates human-readable explanations from analysis results.

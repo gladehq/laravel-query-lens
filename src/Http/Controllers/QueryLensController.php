@@ -68,7 +68,7 @@ class QueryLensController extends Controller
         if ($supportsAnalyze && !empty($analyzeResult)) {
             try {
                 $rawAnalyze = (string) (reset($analyzeResult[0]) ?: '');
-                $deepAnalyzer = new \GladeHQ\QueryLens\ExplainAnalyzer\ExplainAnalyzer();
+                $deepAnalyzer = new \GladeHQ\QueryLens\Services\Explain\Explainer();
                 $analysisResult = $deepAnalyzer->analyze($rawAnalyze);
                 
                 // 1. Get the full human-readable explanation
@@ -81,7 +81,7 @@ class QueryLensController extends Controller
 
                 // 2. Enhance Summary and Insights using the deep analysis
                 // We overwrite the basic summary with the one from our analyzer
-                $summaryGenerator = new \GladeHQ\QueryLens\ExplainAnalyzer\Formatter\CompactFormatter();
+                $summaryGenerator = new \GladeHQ\QueryLens\Services\Explain\Formatter\CompactFormatter();
                 // Extract just the summary line from compact formatter (it's the first line)
                 $compactStats = explode("\n", $summaryGenerator->format($analysisResult))[0] ?? '';
                 

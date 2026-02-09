@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace GladeHQ\QueryLens\ExplainAnalyzer\Nodes;
+namespace GladeHQ\QueryLens\Services\Explain\Nodes;
 
 /**
  * Represents a single operation/step in the MySQL execution plan.

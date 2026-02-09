@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace GladeHQ\QueryLens\ExplainAnalyzer\Parser;
+namespace GladeHQ\QueryLens\Services\Explain\Parser;
 
-use GladeHQ\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
+use GladeHQ\QueryLens\Services\Explain\Nodes\OperationNode;
 
 /**
  * Parses MySQL EXPLAIN ANALYZE output into a structured tree of operation nodes.

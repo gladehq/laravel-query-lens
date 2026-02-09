@@ -2,9 +2,9 @@
 
 declare(strict_types=1);
 
-namespace GladeHQ\QueryLens\ExplainAnalyzer\Issues;
+namespace GladeHQ\QueryLens\Services\Explain\Issues;
 
-use GladeHQ\QueryLens\ExplainAnalyzer\Nodes\OperationNode;
+use GladeHQ\QueryLens\Services\Explain\Nodes\OperationNode;
 
 /**
  * Represents a detected issue in the execution plan.
