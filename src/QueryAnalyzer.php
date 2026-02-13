@@ -161,25 +161,30 @@ class QueryAnalyzer
 
     protected function findOrigin(): array
     {
-        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS);
+        if (!($this->config['trace_origins'] ?? true)) {
+            return ['file' => 'unknown', 'line' => 0, 'is_vendor' => false];
+        }
+
+        $limit = (int) ($this->config['backtrace_limit'] ?? 30);
+        $trace = debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, $limit);
         $packageRoot = realpath(__DIR__ . '/..');
-        
+
         // Find the first frame that is not part of the framework or this package
         foreach ($trace as $frame) {
             if (!isset($frame['file'])) {
                 continue;
             }
-            
+
             $file = realpath($frame['file']);
-            
+
             // Skip the package itself
-            if (str_starts_with($file, $packageRoot)) {
+            if ($file && str_starts_with($file, $packageRoot)) {
                 continue;
             }
 
             // Skip Laravel framework and common internal paths
-            if (str_contains($file, '/vendor/laravel/') || 
-                str_contains($file, '/vendor/illuminate/') || 
+            if (str_contains($file, '/vendor/laravel/') ||
+                str_contains($file, '/vendor/illuminate/') ||
                 str_contains($file, '/storage/framework/')) {
                 continue;
             }

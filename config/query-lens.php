@@ -67,6 +67,19 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Origin Tracing
+    |--------------------------------------------------------------------------
+    |
+    | Controls how query origin (file/line) is determined via debug_backtrace.
+    | Disable in production for maximum performance. The backtrace_limit caps
+    | stack depth to prevent expensive full-stack walks on every query.
+    |
+    */
+    'trace_origins' => env('QUERY_LENS_TRACE_ORIGINS', true),
+    'backtrace_limit' => env('QUERY_LENS_BACKTRACE_LIMIT', 30),
+
+    /*
+    |--------------------------------------------------------------------------
     | Complexity Scoring
     |--------------------------------------------------------------------------
     |
