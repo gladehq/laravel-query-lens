@@ -11,6 +11,7 @@ class CacheQueryStorage implements QueryStorage
     protected string $cacheKey = 'laravel_query_lens_queries_v3';
     protected string $requestsCacheKey = 'laravel_query_lens_requests_v1';
     protected int $ttl = 3600; // 1 hour
+    protected ?string $store = null;
     protected ?\GladeHQ\QueryLens\Services\AlertService $alertService = null;
 
     public function __construct(?string $store = null)
