@@ -18,6 +18,7 @@ class QueryAnalyzer
     protected ?string $requestId = null;
     protected array $queryStructures = [];
     protected bool $enabled = true;
+    protected ?bool $sampledForRequest = null;
 
     public function __construct(array $config, QueryStorage $storage)
     {
@@ -44,6 +45,7 @@ class QueryAnalyzer
     {
         $this->requestId = $id;
         $this->queryStructures = []; // Clear structure tracking for new request
+        $this->sampledForRequest = $this->decideSampling();
     }
 
     public function getRequestId(): ?string
@@ -51,9 +53,34 @@ class QueryAnalyzer
         return $this->requestId;
     }
 
+    public function isSampled(): bool
+    {
+        // Lazy-evaluate for CLI or contexts where setRequestId was never called
+        if ($this->sampledForRequest === null) {
+            $this->sampledForRequest = $this->decideSampling();
+        }
+
+        return $this->sampledForRequest;
+    }
+
+    protected function decideSampling(): bool
+    {
+        $rate = (float) ($this->config['sampling_rate'] ?? 1.0);
+
+        if ($rate <= 0.0) {
+            return false;
+        }
+
+        if ($rate >= 1.0) {
+            return true;
+        }
+
+        return mt_rand(1, 10000) / 10000 <= $rate;
+    }
+
     public function recordQuery(string $sql, array $bindings = [], float $time = 0.0, string $connection = 'default'): void
     {
-        if (!$this->enabled) {
+        if (!$this->enabled || !$this->isSampled()) {
             return;
         }
 
@@ -109,6 +136,10 @@ class QueryAnalyzer
 
     public function recordCacheInteraction(string $type, string $key, array $tags = [], mixed $value = null): void
     {
+        if (!$this->enabled || !$this->isSampled()) {
+            return;
+        }
+
         // Ignore analyzer's own cache keys
         if (str_contains($key, 'laravel_query_lens_queries_v3')) {
             return;

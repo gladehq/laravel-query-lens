@@ -55,6 +55,19 @@ return [
     | Configure various aspects of the query analysis behavior.
     |
     */
+    /*
+    |--------------------------------------------------------------------------
+    | Sampling Rate
+    |--------------------------------------------------------------------------
+    |
+    | Controls what fraction of requests have their queries recorded.
+    | 1.0 = record every request (default), 0.1 = record 10% of requests,
+    | 0.0 = disable recording entirely. The decision is made once per
+    | request so all queries within a sampled request are captured.
+    |
+    */
+    'sampling_rate' => env('QUERY_LENS_SAMPLING_RATE', 1.0),
+
     'analysis' => [
         // Maximum number of queries to keep in memory
         'max_queries' => env('QUERY_LENS_MAX_QUERIES', 1000),
