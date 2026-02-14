@@ -12,6 +12,7 @@ use GladeHQ\QueryLens\QueryAnalyzer;
 use GladeHQ\QueryLens\Services\AggregationService;
 use GladeHQ\QueryLens\Services\DashboardService;
 use GladeHQ\QueryLens\Services\ExplainService;
+use GladeHQ\QueryLens\Services\AIQueryOptimizer;
 use GladeHQ\QueryLens\Services\IndexAdvisor;
 use GladeHQ\QueryLens\Services\QueryExportService;
 use GladeHQ\QueryLens\Services\RegressionDetector;
@@ -312,6 +313,29 @@ class QueryLensController extends Controller
                 ? $retentionService->getStorageStats()
                 : null,
         ]);
+    }
+
+    public function aiOptimize(Request $request): JsonResponse
+    {
+        $optimizer = app(AIQueryOptimizer::class);
+
+        $sql = $request->input('sql');
+
+        if (!$sql) {
+            return response()->json(['error' => 'SQL query is required'], 400);
+        }
+
+        $context = array_filter([
+            'explain' => $request->input('explain'),
+            'schema' => $request->input('schema'),
+            'frequency' => $request->input('frequency'),
+            'avg_duration' => $request->input('avg_duration'),
+            'indexes' => $request->input('indexes'),
+        ]);
+
+        $result = $optimizer->optimize($sql, $context);
+
+        return $this->noCacheResponse(response()->json($result));
     }
 
     public function regressions(Request $request): JsonResponse

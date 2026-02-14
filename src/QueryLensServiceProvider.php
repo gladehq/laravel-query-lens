@@ -18,6 +18,7 @@ use GladeHQ\QueryLens\Services\AggregationService;
 use GladeHQ\QueryLens\Services\AlertService;
 use GladeHQ\QueryLens\Services\DataRetentionService;
 use GladeHQ\QueryLens\Services\IndexAdvisor;
+use GladeHQ\QueryLens\Services\AIQueryOptimizer;
 use GladeHQ\QueryLens\Services\RegressionDetector;
 use GladeHQ\QueryLens\Services\WebhookNotifier;
 use GladeHQ\QueryLens\Filament\QueryLensDataService;
@@ -93,6 +94,10 @@ class QueryLensServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(WebhookNotifier::class);
+
+        $this->app->singleton(AIQueryOptimizer::class, function ($app) {
+            return new AIQueryOptimizer(config('query-lens.ai', []));
+        });
 
         // Register Filament data service (usable with or without Filament panel)
         $this->app->singleton(QueryLensDataService::class, function ($app) {
@@ -186,6 +191,10 @@ class QueryLensServiceProvider extends ServiceProvider
                     // Regression detection
                     Route::get('regressions', [QueryLensController::class, 'regressions'])
                         ->name('query-lens.api.v2.regressions');
+
+                    // AI optimization
+                    Route::post('ai-optimize', [QueryLensController::class, 'aiOptimize'])
+                        ->name('query-lens.api.v2.ai-optimize');
 
                     // Alert management endpoints
                     Route::get('alerts', [AlertController::class, 'index'])->name('query-lens.api.v2.alerts.index');

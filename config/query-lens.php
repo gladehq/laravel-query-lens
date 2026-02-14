@@ -201,6 +201,27 @@ return [
     | Use with the query-lens:check-regression artisan command for CI/CD.
     |
     */
+    /*
+    |--------------------------------------------------------------------------
+    | AI-Powered Optimization
+    |--------------------------------------------------------------------------
+    |
+    | Configure AI-powered query optimization suggestions.
+    | Disabled by default. The package works perfectly without AI.
+    |
+    | Supported providers: 'openai' (works with any OpenAI-compatible API)
+    |
+    */
+    'ai' => [
+        'enabled' => env('QUERY_LENS_AI_ENABLED', false),
+        'provider' => env('QUERY_LENS_AI_PROVIDER', 'openai'),
+        'api_key' => env('QUERY_LENS_AI_KEY'),
+        'model' => env('QUERY_LENS_AI_MODEL', 'gpt-4o-mini'),
+        'endpoint' => env('QUERY_LENS_AI_ENDPOINT', 'https://api.openai.com/v1/chat/completions'),
+        'cache_ttl' => 3600,
+        'rate_limit' => 10,
+    ],
+
     'regression' => [
         'webhook_url' => env('QUERY_LENS_REGRESSION_WEBHOOK_URL'),
         'threshold' => env('QUERY_LENS_REGRESSION_THRESHOLD', 0.2),
