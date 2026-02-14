@@ -15,6 +15,8 @@ use GladeHQ\QueryLens\Listeners\QueryListener;
 use GladeHQ\QueryLens\Services\AggregationService;
 use GladeHQ\QueryLens\Services\AlertService;
 use GladeHQ\QueryLens\Services\DataRetentionService;
+use GladeHQ\QueryLens\Filament\QueryLensDataService;
+use GladeHQ\QueryLens\Filament\QueryLensPlugin;
 use GladeHQ\QueryLens\Storage\CacheQueryStorage;
 use GladeHQ\QueryLens\Storage\DatabaseQueryStorage;
 
@@ -74,6 +76,14 @@ class QueryLensServiceProvider extends ServiceProvider
         });
 
         $this->app->singleton(QueryListener::class);
+
+        // Register Filament data service (usable with or without Filament panel)
+        $this->app->singleton(QueryLensDataService::class, function ($app) {
+            return new QueryLensDataService(
+                $app->make(QueryStorage::class),
+                $app->make(AggregationService::class)
+            );
+        });
     }
 
     public function boot(): void
