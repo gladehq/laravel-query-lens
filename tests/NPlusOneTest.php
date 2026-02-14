@@ -31,8 +31,7 @@ class NPlusOneTest extends TestCase
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 
-    /** @test */
-    public function it_detects_n_plus_one_after_threshold()
+    public function test_it_detects_n_plus_one_after_threshold()
     {
         $storage = new DatabaseQueryStorage();
         $analyzer = new QueryAnalyzer(['analysis' => ['min_execution_time' => 0]], $storage);

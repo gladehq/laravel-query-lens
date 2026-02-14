@@ -15,12 +15,24 @@ class AlertCooldownTest extends TestCase
         return [QueryLensServiceProvider::class];
     }
 
+    protected function getEnvironmentSetUp($app)
+    {
+        // Configure SQLite for testing
+        $app['config']->set('database.default', 'sqlite');
+        $app['config']->set('database.connections.sqlite', [
+            'driver' => 'sqlite',
+            'database' => ':memory:',
+            'prefix' => '',
+        ]);
+        $app['config']->set('app.key', 'base64:'.base64_encode(random_bytes(32)));
+    }
+
     protected function setUp(): void
     {
         parent::setUp();
-        
+
         Config::set('query-lens.storage.driver', 'database');
-        
+
         $this->loadMigrationsFrom(__DIR__ . '/../../database/migrations');
     }
 

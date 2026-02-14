@@ -11,8 +11,7 @@ use Orchestra\Testbench\TestCase;
 
 class MiddlewareExclusionTest extends TestCase
 {
-    /** @test */
-    public function it_disables_analyzer_for_query_lens_routes()
+    public function test_it_disables_analyzer_for_query_lens_routes()
     {
         $analyzerMock = Mockery::mock(QueryAnalyzer::class);
         $analyzerMock->shouldReceive('getRequestId')->andReturn(null);
@@ -30,8 +29,7 @@ class MiddlewareExclusionTest extends TestCase
         });
     }
 
-    /** @test */
-    public function it_enables_analyzer_for_normal_routes()
+    public function test_it_enables_analyzer_for_normal_routes()
     {
         $analyzerMock = Mockery::mock(QueryAnalyzer::class);
         $analyzerMock->shouldReceive('getRequestId')->andReturn(null);

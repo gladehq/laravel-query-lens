@@ -8,8 +8,7 @@ use Orchestra\Testbench\TestCase;
 
 class ExplainTest extends TestCase
 {
-    /** @test */
-    public function it_can_explain_a_query()
+    public function test_it_can_explain_a_query()
     {
         // Mock DB connection for 'sqlite' (default in testbench)
         // Since sqlite uses 'EXPLAIN QUERY PLAN...', we will just mock the select method

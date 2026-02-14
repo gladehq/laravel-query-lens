@@ -37,8 +37,7 @@ class AlertTest extends TestCase
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
     }
 
-    /** @test */
-    public function it_can_create_an_alert()
+    public function test_it_can_create_an_alert()
     {
         $this->withoutExceptionHandling();
         $this->withoutMiddleware();
@@ -65,8 +64,7 @@ class AlertTest extends TestCase
         ]);
     }
 
-    /** @test */
-    public function it_validates_alert_creation()
+    public function test_it_validates_alert_creation()
     {
         $response = $this->postJson(route('query-lens.api.v2.alerts.store'), []);
 
@@ -74,8 +72,7 @@ class AlertTest extends TestCase
             ->assertJsonValidationErrors(['name', 'type', 'conditions', 'channels']);
     }
 
-    /** @test */
-    public function it_validates_channel_types()
+    public function test_it_validates_channel_types()
     {
         $data = [
             'name' => 'Invalid Channel Alert',
@@ -91,8 +88,7 @@ class AlertTest extends TestCase
             ->assertJsonValidationErrors(['channels.0']);
     }
 
-    /** @test */
-    public function it_sends_email_notification()
+    public function test_it_sends_email_notification()
     {
         \Illuminate\Support\Facades\Mail::fake();
         
@@ -121,8 +117,7 @@ class AlertTest extends TestCase
         });
     }
 
-    /** @test */
-    public function it_sends_slack_notification()
+    public function test_it_sends_slack_notification()
     {
         \Illuminate\Support\Facades\Http::fake();
         
