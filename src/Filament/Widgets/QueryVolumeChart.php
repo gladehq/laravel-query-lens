@@ -11,7 +11,8 @@ use GladeHQ\QueryLens\Filament\QueryLensDataService;
  * Bar chart widget showing query volume over time.
  *
  * Displays total query count per time bucket.
- * When Filament is installed, extends ChartWidget for native rendering.
+ * When Filament is installed, extends ChartWidget for native Chart.js rendering.
+ * When absent, provides the same data structure via getChartData().
  */
 class QueryVolumeChart extends BaseChartWidgetResolver
 {

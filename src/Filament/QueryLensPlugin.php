@@ -14,9 +14,10 @@ use GladeHQ\QueryLens\Filament\Widgets\QueryVolumeChart;
 /**
  * Filament Panel Plugin for QueryLens.
  *
- * Implements Filament\Contracts\Plugin via duck typing so the class can be loaded
- * safely when Filament is not installed. Filament's plugin resolution checks for
- * getId(), register(), and boot() methods without requiring the interface.
+ * Implements Filament\Contracts\Plugin when Filament is installed (via duck typing).
+ * Filament's plugin resolution checks for getId(), register(), and boot() methods.
+ * When Filament is absent, this class is still loadable and configurable but
+ * register/boot become no-ops since there is no panel to attach to.
  *
  * Usage:
  *   $panel->plugin(QueryLensPlugin::make())
@@ -27,6 +28,8 @@ class QueryLensPlugin
     protected bool $enableAlerts = true;
     protected bool $enableTrends = true;
     protected ?string $navigationGroup = 'Query Lens';
+    protected ?string $navigationIcon = null;
+    protected ?int $navigationSort = null;
 
     public static function make(): static
     {
@@ -62,6 +65,18 @@ class QueryLensPlugin
         return $this;
     }
 
+    public function navigationIcon(?string $icon): static
+    {
+        $this->navigationIcon = $icon;
+        return $this;
+    }
+
+    public function navigationSort(?int $sort): static
+    {
+        $this->navigationSort = $sort;
+        return $this;
+    }
+
     public function isDashboardEnabled(): bool
     {
         return $this->enableDashboard;
@@ -82,6 +97,58 @@ class QueryLensPlugin
         return $this->navigationGroup;
     }
 
+    public function getNavigationIcon(): ?string
+    {
+        return $this->navigationIcon;
+    }
+
+    public function getNavigationSort(): ?int
+    {
+        return $this->navigationSort;
+    }
+
+    /**
+     * Get the list of page classes that should be registered.
+     *
+     * @return array<class-string>
+     */
+    public function getPages(): array
+    {
+        $pages = [];
+
+        if ($this->enableDashboard) {
+            $pages[] = QueryLensDashboard::class;
+        }
+        if ($this->enableAlerts) {
+            $pages[] = QueryLensAlerts::class;
+        }
+        if ($this->enableTrends) {
+            $pages[] = QueryLensTrends::class;
+        }
+
+        return $pages;
+    }
+
+    /**
+     * Get the list of widget classes that should be registered.
+     *
+     * @return array<class-string>
+     */
+    public function getWidgets(): array
+    {
+        $widgets = [];
+
+        if ($this->enableDashboard) {
+            $widgets[] = QueryLensStatsWidget::class;
+        }
+        if ($this->enableTrends) {
+            $widgets[] = QueryPerformanceChart::class;
+            $widgets[] = QueryVolumeChart::class;
+        }
+
+        return $widgets;
+    }
+
     /**
      * Register plugin pages and widgets with the Filament panel.
      *
@@ -89,25 +156,7 @@ class QueryLensPlugin
      */
     public function register($panel): void
     {
-        $pages = [];
-        $widgets = [];
-
-        if ($this->enableDashboard) {
-            $pages[] = QueryLensDashboard::class;
-            $widgets[] = QueryLensStatsWidget::class;
-        }
-
-        if ($this->enableAlerts) {
-            $pages[] = QueryLensAlerts::class;
-        }
-
-        if ($this->enableTrends) {
-            $pages[] = QueryLensTrends::class;
-            $widgets[] = QueryPerformanceChart::class;
-            $widgets[] = QueryVolumeChart::class;
-        }
-
-        $panel->pages($pages)->widgets($widgets);
+        $panel->pages($this->getPages())->widgets($this->getWidgets());
     }
 
     /**

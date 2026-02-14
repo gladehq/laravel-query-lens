@@ -5,7 +5,8 @@ declare(strict_types=1);
 /**
  * This file resolves the base class for Filament pages.
  *
- * When Filament is installed, pages extend Filament\Pages\Page.
+ * When Filament is installed, pages extend Filament\Pages\Page and include
+ * the HasTable trait for Table Builder integration.
  * When Filament is absent, pages extend a minimal stub that provides
  * the same public API surface without Livewire/Filament dependencies.
  *
@@ -17,8 +18,9 @@ declare(strict_types=1);
 namespace GladeHQ\QueryLens\Filament\Concerns;
 
 if (class_exists(\Filament\Pages\Page::class)) {
-    abstract class BasePageResolver extends \Filament\Pages\Page
+    abstract class BasePageResolver extends \Filament\Pages\Page implements \Filament\Tables\Contracts\HasTable
     {
+        use \Filament\Tables\Concerns\InteractsWithTable;
     }
 } else {
     abstract class BasePageResolver

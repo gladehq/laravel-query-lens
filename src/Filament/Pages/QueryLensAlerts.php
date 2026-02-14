@@ -10,8 +10,8 @@ use GladeHQ\QueryLens\Models\Alert;
 /**
  * Alerts page for the Filament plugin.
  *
- * When Filament is installed, this extends Filament\Pages\Page and provides
- * Table Builder integration with CRUD actions for alert management.
+ * When Filament is installed, this extends Filament\Pages\Page with HasTable
+ * integration, providing CRUD actions for alert management via modals.
  * When Filament is absent, it serves as a standalone data assembler.
  */
 class QueryLensAlerts extends BasePageResolver
@@ -26,6 +26,9 @@ class QueryLensAlerts extends BasePageResolver
 
     /**
      * Define table columns for the alerts list.
+     *
+     * When Filament is installed, these map to real Table Builder columns:
+     * TextColumn, BadgeColumn, ToggleColumn, etc.
      */
     public static function getTableColumnDefinitions(): array
     {
@@ -89,6 +92,9 @@ class QueryLensAlerts extends BasePageResolver
 
     /**
      * Define table actions for each alert row.
+     *
+     * When Filament is installed, these map to Filament Action objects:
+     * EditAction (modal form), toggle Action, DeleteAction (with confirmation).
      */
     public static function getTableActionDefinitions(): array
     {
@@ -118,6 +124,9 @@ class QueryLensAlerts extends BasePageResolver
 
     /**
      * Define header actions for the alerts page.
+     *
+     * When Filament is installed, the Create action opens a modal form
+     * with the schema defined in getAlertFormDefinitions().
      */
     public static function getHeaderActionDefinitions(): array
     {
@@ -133,6 +142,9 @@ class QueryLensAlerts extends BasePageResolver
 
     /**
      * Define the form schema for creating/editing alerts.
+     *
+     * When Filament is installed, these map to real Filament Form Builder
+     * components: TextInput, Select, KeyValue, CheckboxList, Toggle, etc.
      */
     public static function getAlertFormDefinitions(): array
     {

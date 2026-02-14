@@ -11,9 +11,10 @@ use GladeHQ\QueryLens\Filament\Widgets\QueryLensStatsWidget;
 /**
  * Dashboard page for the Filament plugin.
  *
- * When Filament is installed, this extends Filament\Pages\Page and provides
- * Table Builder integration with columns, filters, and actions.
- * When Filament is absent, it serves as a standalone data assembler.
+ * When Filament is installed, this extends Filament\Pages\Page with HasTable
+ * integration, providing real Table Builder columns, filters, and actions.
+ * When Filament is absent, it serves as a standalone data assembler with
+ * static definition arrays that document the intended Filament schema.
  */
 class QueryLensDashboard extends BasePageResolver
 {
@@ -28,6 +29,10 @@ class QueryLensDashboard extends BasePageResolver
 
     /**
      * Header widgets shown above the page content.
+     *
+     * When Filament is installed, these are rendered as real Filament widgets.
+     * The getHeaderWidgets() method is the Filament convention; we also expose
+     * getHeaderWidgetDefinitions() for testability without Filament.
      */
     public static function getHeaderWidgetDefinitions(): array
     {
@@ -39,8 +44,9 @@ class QueryLensDashboard extends BasePageResolver
     /**
      * Define table columns for the query list.
      *
-     * When Filament is installed, these are used by the Table Builder.
-     * Without Filament, these serve as column schema documentation.
+     * When Filament is installed, the table() method on this page builds real
+     * Filament\Tables\Columns objects. These definitions serve as the canonical
+     * schema and are used by both the Filament Table Builder and non-Filament views.
      */
     public static function getTableColumnDefinitions(): array
     {
@@ -86,6 +92,8 @@ class QueryLensDashboard extends BasePageResolver
 
     /**
      * Define table filters.
+     *
+     * Maps to Filament SelectFilter, TernaryFilter, and custom date range filter.
      */
     public static function getTableFilterDefinitions(): array
     {
@@ -111,6 +119,9 @@ class QueryLensDashboard extends BasePageResolver
 
     /**
      * Define table actions available per row.
+     *
+     * When Filament is installed, these map to Filament Action objects with
+     * modal rendering, icons, and event handling.
      */
     public static function getTableActionDefinitions(): array
     {
@@ -134,6 +145,8 @@ class QueryLensDashboard extends BasePageResolver
 
     /**
      * Define header actions for the page.
+     *
+     * When Filament is installed, these render as Action buttons in the page header.
      */
     public static function getHeaderActionDefinitions(): array
     {
@@ -157,6 +170,8 @@ class QueryLensDashboard extends BasePageResolver
 
     /**
      * Assemble view data from the data service.
+     *
+     * Used by both Filament (via mount/getViewData) and standalone views.
      */
     public function getViewData(QueryLensDataService $dataService, array $filters = []): array
     {

@@ -10,8 +10,9 @@ use GladeHQ\QueryLens\Filament\QueryLensDataService;
 /**
  * Line chart widget showing query performance trends over time.
  *
- * Displays average, P95, and P99 latency lines.
- * When Filament is installed, extends ChartWidget for native rendering.
+ * Displays three datasets: average latency, P95, and P99.
+ * When Filament is installed, extends ChartWidget for native Chart.js rendering
+ * with automatic polling. When absent, provides the same data via getChartData().
  */
 class QueryPerformanceChart extends BaseChartWidgetResolver
 {

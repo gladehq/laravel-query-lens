@@ -12,8 +12,9 @@ use GladeHQ\QueryLens\Filament\Widgets\QueryVolumeChart;
 /**
  * Trends page for the Filament plugin.
  *
- * When Filament is installed, this extends Filament\Pages\Page and provides
- * Chart Widgets and a Table Builder for top queries.
+ * When Filament is installed, this extends Filament\Pages\Page with HasTable
+ * integration for the top queries table, and uses ChartWidget subclasses
+ * as header widgets for performance and volume charts.
  * When Filament is absent, it serves as a standalone data assembler.
  */
 class QueryLensTrends extends BasePageResolver
@@ -27,7 +28,10 @@ class QueryLensTrends extends BasePageResolver
     protected static ?string $navigationLabel = 'Query Trends';
 
     /**
-     * Header widgets for the trends page (chart widgets).
+     * Header widgets for the trends page.
+     *
+     * When Filament is installed, these ChartWidget subclasses render
+     * as real Chart.js-powered widgets with polling support.
      */
     public static function getHeaderWidgetDefinitions(): array
     {
@@ -39,6 +43,9 @@ class QueryLensTrends extends BasePageResolver
 
     /**
      * Define table columns for the top queries table.
+     *
+     * When Filament is installed, these map to sortable/searchable columns
+     * in the Table Builder rendered below the chart widgets.
      */
     public static function getTableColumnDefinitions(): array
     {
@@ -80,6 +87,8 @@ class QueryLensTrends extends BasePageResolver
 
     /**
      * Define the period selector options.
+     *
+     * Used as filter options for both the chart widgets and the top queries table.
      */
     public static function getPeriodOptions(): array
     {

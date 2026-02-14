@@ -1,7 +1,7 @@
 <x-filament-panels::page>
     {{-- Stats overview is rendered via getHeaderWidgets() when Filament is installed --}}
 
-    {{-- Query table rendered via Table Builder when available, fallback to static HTML --}}
+    {{-- Query table: rendered by Table Builder (InteractsWithTable) when Filament provides it --}}
     @if(isset($this) && method_exists($this, 'getTable'))
         {{ $this->table }}
     @else

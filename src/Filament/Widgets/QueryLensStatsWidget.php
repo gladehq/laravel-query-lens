@@ -11,7 +11,7 @@ use GladeHQ\QueryLens\Filament\QueryLensDataService;
  * Stats overview widget for the Filament dashboard.
  *
  * When Filament is installed, this extends StatsOverviewWidget and
- * returns Filament Stat objects via getStats().
+ * returns Filament Stat objects via getStats() with trend indicators.
  * When Filament is absent, it provides structured stat data arrays.
  */
 class QueryLensStatsWidget extends BaseStatsWidgetResolver
@@ -22,8 +22,9 @@ class QueryLensStatsWidget extends BaseStatsWidgetResolver
     /**
      * Get stats for the widget.
      *
-     * When Filament is installed, this returns Filament Stat objects.
-     * Without Filament, it returns structured arrays.
+     * When Filament is installed, this returns Filament Stat objects with
+     * descriptions, icons, and color indicators.
+     * Without Filament, it returns structured arrays suitable for rendering.
      */
     public function getStats(): array
     {
@@ -39,6 +40,9 @@ class QueryLensStatsWidget extends BaseStatsWidgetResolver
 
     /**
      * Build Filament Stat objects when Filament is available.
+     *
+     * Returns stats with trend descriptions, directional icons, and
+     * contextual colors (danger for slow query increases, success for decreases).
      */
     protected function buildFilamentStats(array $stats): array
     {
