@@ -148,6 +148,7 @@ class QueryLensServiceProvider extends ServiceProvider
                     Route::get('poll', [QueryLensController::class, 'poll'])->name('query-lens.api.v2.poll');
                     Route::get('requests', [QueryLensController::class, 'requestsV2'])->name('query-lens.api.v2.requests');
                     Route::get('storage', [QueryLensController::class, 'storageInfo'])->name('query-lens.api.v2.storage');
+                    Route::get('search', [QueryLensController::class, 'search'])->name('query-lens.api.v2.search');
 
                     // Alert management endpoints
                     Route::get('alerts', [AlertController::class, 'index'])->name('query-lens.api.v2.alerts.index');

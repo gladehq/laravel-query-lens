@@ -534,6 +534,26 @@ class QueryLensController extends Controller
         ]));
     }
 
+    public function search(Request $request): JsonResponse
+    {
+        $filters = array_filter([
+            'sql_like' => $request->query('sql_like'),
+            'table_name' => $request->query('table_name'),
+            'time_from' => $request->query('time_from'),
+            'time_to' => $request->query('time_to'),
+            'min_duration' => $request->query('min_duration'),
+            'max_duration' => $request->query('max_duration'),
+            'type' => $request->query('type'),
+            'is_slow' => $request->has('is_slow') ? $request->boolean('is_slow') : null,
+            'page' => $request->query('page', 1),
+            'per_page' => $request->query('per_page', 15),
+        ], fn($v) => $v !== null);
+
+        $results = $this->storage->search($filters);
+
+        return $this->noCacheResponse(response()->json($results));
+    }
+
     public function storageInfo(): JsonResponse
     {
         $retentionService = app(\GladeHQ\QueryLens\Services\DataRetentionService::class);

@@ -222,6 +222,17 @@ class CacheQueryStorage implements QueryStorage
         // Cache storage computes aggregates on-the-fly; no finalization needed
     }
 
+    public function search(array $filters = []): array
+    {
+        // Cache storage does not support persistent search -- return empty result set
+        return [
+            'data' => [],
+            'total' => 0,
+            'page' => max(1, (int) ($filters['page'] ?? 1)),
+            'per_page' => max(1, min(100, (int) ($filters['per_page'] ?? 15))),
+        ];
+    }
+
     public function supportsPersistence(): bool
     {
         return false;
