@@ -5,6 +5,10 @@ namespace GladeHQ\QueryLens;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Str;
 use GladeHQ\QueryLens\Contracts\QueryStorage;
+use GladeHQ\QueryLens\DTOs\ComplexityAnalysis;
+use GladeHQ\QueryLens\DTOs\PerformanceRating;
+use GladeHQ\QueryLens\DTOs\QueryAnalysisResult;
+use GladeHQ\QueryLens\DTOs\QueryType;
 use GladeHQ\QueryLens\Models\AnalyzedQuery;
 
 class QueryAnalyzer
@@ -201,31 +205,10 @@ class QueryAnalyzer
 
     public function analyzeQuery(string $sql, array $bindings = [], float $time = 0.0): array
     {
-        return [
-            'type' => $this->getQueryType($sql),
-            'performance' => $this->analyzePerformance($sql, $time),
-            'complexity' => $this->analyzeComplexity($sql),
-            'recommendations' => $this->getRecommendations($sql, $time),
-            'issues' => $this->detectIssues($sql, $bindings),
-        ];
+        return $this->buildAnalysisResult($sql, $bindings, $time)->toArray();
     }
 
-    protected function getQueryType(string $sql): string
-    {
-        $sql = trim(strtoupper($sql));
-
-        if (str_starts_with($sql, 'SELECT')) return 'SELECT';
-        if (str_starts_with($sql, 'INSERT')) return 'INSERT';
-        if (str_starts_with($sql, 'UPDATE')) return 'UPDATE';
-        if (str_starts_with($sql, 'DELETE')) return 'DELETE';
-        if (str_starts_with($sql, 'CREATE')) return 'CREATE';
-        if (str_starts_with($sql, 'ALTER')) return 'ALTER';
-        if (str_starts_with($sql, 'DROP')) return 'DROP';
-
-        return 'OTHER';
-    }
-
-    protected function analyzePerformance(string $sql, float $time): array
+    protected function buildAnalysisResult(string $sql, array $bindings, float $time): QueryAnalysisResult
     {
         $thresholds = $this->config['performance_thresholds'] ?? [
             'fast' => 0.1,
@@ -233,48 +216,16 @@ class QueryAnalyzer
             'slow' => 1.0,
         ];
 
-        $rating = 'very_slow';
-        if ($time <= ($thresholds['fast'] ?? 0.1)) {
-            $rating = 'fast';
-        } elseif ($time <= ($thresholds['moderate'] ?? 0.5)) {
-            $rating = 'moderate';
-        } elseif ($time <= ($thresholds['slow'] ?? 1.0)) {
-            $rating = 'slow';
-        }
+        $weights = $this->config['complexity_weights'] ?? [];
 
-        return [
-            'execution_time' => $time,
-            'rating' => $rating,
-            'is_slow' => $time > ($thresholds['slow'] ?? 1.0),
-        ];
-    }
-
-    protected function analyzeComplexity(string $sql): array
-    {
-        $sql = strtoupper($sql);
-
-        $joinCount = substr_count($sql, 'JOIN');
-        $subqueryCount = substr_count($sql, 'SELECT') - 1; // Subtract main SELECT
-        $conditionCount = substr_count($sql, 'WHERE') + substr_count($sql, 'HAVING');
-        $orderByCount = substr_count($sql, 'ORDER BY');
-        $groupByCount = substr_count($sql, 'GROUP BY');
-
-        $complexityScore = $joinCount * 2 + $subqueryCount * 3 + $conditionCount + $orderByCount + $groupByCount;
-
-        $complexity = 'low';
-        if ($complexityScore > 10) {
-            $complexity = 'high';
-        } elseif ($complexityScore > 5) {
-            $complexity = 'medium';
-        }
-
-        return [
-            'score' => $complexityScore,
-            'level' => $complexity,
-            'joins' => $joinCount,
-            'subqueries' => $subqueryCount,
-            'conditions' => $conditionCount,
-        ];
+        return new QueryAnalysisResult(
+            type: QueryType::fromSql($sql),
+            performance: PerformanceRating::fromTime($time, $thresholds),
+            executionTime: $time,
+            complexity: ComplexityAnalysis::analyze($sql, $weights),
+            recommendations: $this->getRecommendations($sql, $time),
+            issues: $this->detectIssues($sql, $bindings),
+        );
     }
 
     protected function getRecommendations(string $sql, float $time): array
